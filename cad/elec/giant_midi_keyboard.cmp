@@ -1,0 +1,108 @@
+Cmp-Mod V01 Created by Cvpcb 0.201503220816+5528~22~ubuntu14.04.1-product   date = Thu 26 Mar 2015 01:05:40 PM CET
+
+BeginCmp
+TimeStamp = /55140362;
+Reference = C1;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_ThroughHole:C_Disc_D6_P5;
+EndCmp
+
+BeginCmp
+TimeStamp = /5514050F;
+Reference = C2;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_ThroughHole:C_Disc_D6_P5;
+EndCmp
+
+BeginCmp
+TimeStamp = /55140559;
+Reference = C3;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_ThroughHole:C_Disc_D6_P5;
+EndCmp
+
+BeginCmp
+TimeStamp = /551404C7;
+Reference = C4;
+ValeurCmp = 100nF;
+IdModule  = Capacitors_ThroughHole:C_Disc_D6_P5;
+EndCmp
+
+BeginCmp
+TimeStamp = /55142D29;
+Reference = P1;
+ValeurCmp = LEFT;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x13;
+EndCmp
+
+BeginCmp
+TimeStamp = /5514311D;
+Reference = P2;
+ValeurCmp = RIGHT;
+IdModule  = Pin_Headers:Pin_Header_Straight_2x13;
+EndCmp
+
+BeginCmp
+TimeStamp = /55141E94;
+Reference = RR1;
+ValeurCmp = 2.2k;
+IdModule  = Housings_SIP:SIP9_Housing_BigPads;
+EndCmp
+
+BeginCmp
+TimeStamp = /5514221B;
+Reference = RR2;
+ValeurCmp = 2.2k;
+IdModule  = Housings_SIP:SIP9_Housing_BigPads;
+EndCmp
+
+BeginCmp
+TimeStamp = /551424FB;
+Reference = RR3;
+ValeurCmp = 2.2k;
+IdModule  = Housings_SIP:SIP9_Housing_BigPads;
+EndCmp
+
+BeginCmp
+TimeStamp = /55142343;
+Reference = RR4;
+ValeurCmp = 2.2k;
+IdModule  = Housings_SIP:SIP9_Housing_BigPads;
+EndCmp
+
+BeginCmp
+TimeStamp = /551401DB;
+Reference = U1;
+ValeurCmp = MCP3008;
+IdModule  = Sockets_DIP:DIP-16__300_ELL;
+EndCmp
+
+BeginCmp
+TimeStamp = /55140293;
+Reference = U2;
+ValeurCmp = MCP3008;
+IdModule  = Sockets_DIP:DIP-16__300_ELL;
+EndCmp
+
+BeginCmp
+TimeStamp = /551402D3;
+Reference = U3;
+ValeurCmp = MCP3008;
+IdModule  = Sockets_DIP:DIP-16__300_ELL;
+EndCmp
+
+BeginCmp
+TimeStamp = /55140307;
+Reference = U4;
+ValeurCmp = MCP3008;
+IdModule  = Sockets_DIP:DIP-16__300_ELL;
+EndCmp
+
+BeginCmp
+TimeStamp = /55140634;
+Reference = U5;
+ValeurCmp = ARDUINO_MICRO;
+IdModule  = Giant_Midi_Keyboard:ARDUINO_MICRO;
+EndCmp
+
+EndListe

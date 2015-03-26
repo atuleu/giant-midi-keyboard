@@ -1,0 +1,7 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP MCP3008
+D 2.7V 8-Channel 10-Bit A/D Converters with SPI Serial Interface
+$ENDCMP
+#
+#End Doc Library
