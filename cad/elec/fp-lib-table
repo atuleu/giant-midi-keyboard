@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name Giant_Midi_Keyboard)(type KiCad)(uri ${KIPRJMOD}/giant-midi-keyboard.pretty)(options "")(descr "Library specific for the project"))
-)
