@@ -1,0 +1,427 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:giant_midi_keyboard
+LIBS:front-panel-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L CONN_01X10 P1
+U 1 1 55191840
+P 1050 1750
+F 0 "P1" H 1050 2300 50  0000 C CNN
+F 1 "CONN_01X10" V 1150 1750 50  0000 C CNN
+F 2 "Socket_Strips:Socket_Strip_Straight_2x05" H 1050 1750 60  0001 C CNN
+F 3 "" H 1050 1750 60  0000 C CNN
+	1    1050 1750
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR01
+U 1 1 55191945
+P 1350 2300
+F 0 "#PWR01" H 1350 2050 50  0001 C CNN
+F 1 "GND" H 1350 2150 50  0000 C CNN
+F 2 "" H 1350 2300 60  0000 C CNN
+F 3 "" H 1350 2300 60  0000 C CNN
+	1    1350 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR02
+U 1 1 5519195A
+P 1400 1200
+F 0 "#PWR02" H 1400 1050 50  0001 C CNN
+F 1 "+5V" H 1400 1340 50  0000 C CNN
+F 2 "" H 1400 1200 60  0000 C CNN
+F 3 "" H 1400 1200 60  0000 C CNN
+	1    1400 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D1
+U 1 1 55191A97
+P 3850 4200
+F 0 "D1" H 3850 4300 50  0000 C CNN
+F 1 "LED" H 3850 4100 50  0000 C CNN
+F 2 "LEDs:LED-5MM" H 3850 4200 60  0001 C CNN
+F 3 "" H 3850 4200 60  0000 C CNN
+F 4 "LC503FBL1-15Q-A3-00001 " H 3850 4200 60  0001 C CNN "Part Number"
+	1    3850 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R3
+U 1 1 55191DEF
+P 3250 4200
+F 0 "R3" V 3330 4200 50  0000 C CNN
+F 1 "100" V 3250 4200 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3180 4200 30  0001 C CNN
+F 3 "" H 3250 4200 30  0000 C CNN
+	1    3250 4200
+	0    1    1    0   
+$EndComp
+$Comp
+L R R4
+U 1 1 55191F48
+P 3250 4550
+F 0 "R4" V 3330 4550 50  0000 C CNN
+F 1 "100" V 3250 4550 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3180 4550 30  0001 C CNN
+F 3 "" H 3250 4550 30  0000 C CNN
+	1    3250 4550
+	0    1    1    0   
+$EndComp
+$Comp
+L R R5
+U 1 1 55191F7C
+P 3250 4850
+F 0 "R5" V 3330 4850 50  0000 C CNN
+F 1 "100" V 3250 4850 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3180 4850 30  0001 C CNN
+F 3 "" H 3250 4850 30  0000 C CNN
+	1    3250 4850
+	0    1    1    0   
+$EndComp
+$Comp
+L R R6
+U 1 1 55191FB6
+P 3250 5150
+F 0 "R6" V 3330 5150 50  0000 C CNN
+F 1 "100" V 3250 5150 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3180 5150 30  0001 C CNN
+F 3 "" H 3250 5150 30  0000 C CNN
+	1    3250 5150
+	0    1    1    0   
+$EndComp
+$Comp
+L R R7
+U 1 1 55191FF2
+P 3250 5450
+F 0 "R7" V 3330 5450 50  0000 C CNN
+F 1 "100" V 3250 5450 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3180 5450 30  0001 C CNN
+F 3 "" H 3250 5450 30  0000 C CNN
+	1    3250 5450
+	0    1    1    0   
+$EndComp
+$Comp
+L R R8
+U 1 1 55192020
+P 3400 950
+F 0 "R8" V 3480 950 50  0000 C CNN
+F 1 "10k" V 3400 950 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3330 950 30  0001 C CNN
+F 3 "" H 3400 950 30  0000 C CNN
+	1    3400 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R2
+U 1 1 55192185
+P 3150 950
+F 0 "R2" V 3230 950 50  0000 C CNN
+F 1 "10k" V 3150 950 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 3080 950 30  0001 C CNN
+F 3 "" H 3150 950 30  0000 C CNN
+	1    3150 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R1
+U 1 1 551921EF
+P 2900 950
+F 0 "R1" V 2980 950 50  0000 C CNN
+F 1 "10k" V 2900 950 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM10mm" V 2830 950 30  0001 C CNN
+F 3 "" H 2900 950 30  0000 C CNN
+	1    2900 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR03
+U 1 1 55192231
+P 3600 750
+F 0 "#PWR03" H 3600 600 50  0001 C CNN
+F 1 "+5V" H 3600 890 50  0000 C CNN
+F 2 "" H 3600 750 60  0000 C CNN
+F 3 "" H 3600 750 60  0000 C CNN
+	1    3600 750 
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR04
+U 1 1 55192372
+P 5600 3400
+F 0 "#PWR04" H 5600 3150 50  0001 C CNN
+F 1 "GND" H 5600 3250 50  0000 C CNN
+F 2 "" H 5600 3400 60  0000 C CNN
+F 3 "" H 5600 3400 60  0000 C CNN
+	1    5600 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR05
+U 1 1 5519276C
+P 4500 5650
+F 0 "#PWR05" H 4500 5400 50  0001 C CNN
+F 1 "GND" H 4500 5500 50  0000 C CNN
+F 2 "" H 4500 5650 60  0000 C CNN
+F 3 "" H 4500 5650 60  0000 C CNN
+	1    4500 5650
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D2
+U 1 1 55192B29
+P 3850 4550
+F 0 "D2" H 3850 4650 50  0000 C CNN
+F 1 "LED" H 3850 4450 50  0000 C CNN
+F 2 "LEDs:LED-5MM" H 3850 4550 60  0001 C CNN
+F 3 "" H 3850 4550 60  0000 C CNN
+F 4 "LC503FBL1-15Q-A3-00001 " H 3850 4550 60  0001 C CNN "Part Number"
+	1    3850 4550
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D3
+U 1 1 55192B67
+P 3850 4850
+F 0 "D3" H 3850 4950 50  0000 C CNN
+F 1 "LED" H 3850 4750 50  0000 C CNN
+F 2 "LEDs:LED-5MM" H 3850 4850 60  0001 C CNN
+F 3 "" H 3850 4850 60  0000 C CNN
+F 4 "LC503FBL1-15Q-A3-00001 " H 3850 4850 60  0001 C CNN "Part Number"
+	1    3850 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D4
+U 1 1 55192BA5
+P 3850 5150
+F 0 "D4" H 3850 5250 50  0000 C CNN
+F 1 "LED" H 3850 5050 50  0000 C CNN
+F 2 "LEDs:LED-5MM" H 3850 5150 60  0001 C CNN
+F 3 "" H 3850 5150 60  0000 C CNN
+F 4 "LC503FBL1-15Q-A3-00001 " H 3850 5150 60  0001 C CNN "Part Number"
+	1    3850 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED D5
+U 1 1 55192BE1
+P 3850 5450
+F 0 "D5" H 3850 5550 50  0000 C CNN
+F 1 "LED" H 3850 5350 50  0000 C CNN
+F 2 "LEDs:LED-5MM" H 3850 5450 60  0001 C CNN
+F 3 "" H 3850 5450 60  0000 C CNN
+F 4 "LC503FBL1-15Q-A3-00001 " H 3850 5450 60  0001 C CNN "Part Number"
+	1    3850 5450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1250 1300 1400 1300
+Wire Wire Line
+	1400 1300 1400 1200
+Wire Wire Line
+	1250 2200 1350 2200
+Wire Wire Line
+	1350 2200 1350 2300
+Wire Wire Line
+	2900 800  2900 750 
+Wire Wire Line
+	2900 750  3600 750 
+Wire Wire Line
+	3150 800  3150 750 
+Connection ~ 3150 750 
+Wire Wire Line
+	3400 800  3400 750 
+Connection ~ 3400 750 
+Wire Wire Line
+	1250 1400 4400 1400
+Wire Wire Line
+	1250 1600 2450 1600
+Wire Wire Line
+	1250 1700 2350 1700
+Wire Wire Line
+	2350 1700 2350 4200
+Wire Wire Line
+	2350 4200 3100 4200
+Wire Wire Line
+	1250 1800 2250 1800
+Wire Wire Line
+	2250 1800 2250 4550
+Wire Wire Line
+	2250 4550 3100 4550
+Wire Wire Line
+	1250 1900 2150 1900
+Wire Wire Line
+	2150 1900 2150 4850
+Wire Wire Line
+	2150 4850 3100 4850
+Wire Wire Line
+	1250 2000 2050 2000
+Wire Wire Line
+	2050 2000 2050 5150
+Wire Wire Line
+	2050 5150 3100 5150
+Wire Wire Line
+	1250 2100 1950 2100
+Wire Wire Line
+	1950 2100 1950 5450
+Wire Wire Line
+	1950 5450 3100 5450
+Wire Wire Line
+	3400 4200 3650 4200
+Wire Wire Line
+	3400 4550 3650 4550
+Wire Wire Line
+	3400 4850 3650 4850
+Wire Wire Line
+	3400 5150 3650 5150
+Wire Wire Line
+	3400 5450 3650 5450
+Wire Wire Line
+	4050 4200 4500 4200
+Wire Wire Line
+	4500 4200 4500 5650
+Wire Wire Line
+	4050 4550 4500 4550
+Connection ~ 4500 4550
+Wire Wire Line
+	4050 4850 4500 4850
+Connection ~ 4500 4850
+Wire Wire Line
+	4050 5150 4500 5150
+Connection ~ 4500 5150
+Wire Wire Line
+	4050 5450 4500 5450
+Connection ~ 4500 5450
+Wire Wire Line
+	3150 1100 3150 2100
+Wire Wire Line
+	2450 1600 2450 2800
+Wire Wire Line
+	1250 1500 3150 1500
+Connection ~ 3150 1500
+Wire Wire Line
+	5300 1400 5600 1400
+Wire Wire Line
+	5600 1400 5600 3400
+$Comp
+L FSM2JAH U1
+U 1 1 55194ABC
+P 4850 1650
+F 0 "U1" H 4650 2000 60  0000 C CNN
+F 1 "FSM2JAH" H 4750 1450 60  0000 C CNN
+F 2 "Giant Midi Keyboard:FSM2JAH" H 4700 1650 60  0001 C CNN
+F 3 "" H 4700 1650 60  0000 C CNN
+F 4 "FSM2JAH" H 4850 1650 60  0001 C CNN "Part Number"
+	1    4850 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L FSM2JAH U2
+U 1 1 55194DAF
+P 4850 2350
+F 0 "U2" H 4650 2700 60  0000 C CNN
+F 1 "FSM2JAH" H 4750 2150 60  0000 C CNN
+F 2 "Giant Midi Keyboard:FSM2JAH" H 4700 2350 60  0001 C CNN
+F 3 "" H 4700 2350 60  0000 C CNN
+F 4 "FSM2JAH" H 4850 2350 60  0001 C CNN "Part Number"
+	1    4850 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L FSM2JAH U3
+U 1 1 55194E03
+P 4850 3050
+F 0 "U3" H 4650 3400 60  0000 C CNN
+F 1 "FSM2JAH" H 4750 2850 60  0000 C CNN
+F 2 "Giant Midi Keyboard:FSM2JAH" H 4700 3050 60  0001 C CNN
+F 3 "" H 4700 3050 60  0000 C CNN
+F 4 "FSM2JAH" H 4850 3050 60  0001 C CNN "Part Number"
+	1    4850 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2450 2800 4400 2800
+Wire Wire Line
+	3150 2100 4400 2100
+Wire Wire Line
+	4150 1400 4150 1750
+Wire Wire Line
+	4150 1750 4400 1750
+Connection ~ 4150 1400
+Wire Wire Line
+	4150 2100 4150 2450
+Wire Wire Line
+	4150 2450 4400 2450
+Connection ~ 4150 2100
+Wire Wire Line
+	4150 2800 4150 3150
+Wire Wire Line
+	4150 3150 4400 3150
+Connection ~ 4150 2800
+Wire Wire Line
+	3400 1100 3400 1400
+Connection ~ 3400 1400
+Wire Wire Line
+	2900 1100 2900 2800
+Connection ~ 2900 2800
+Wire Wire Line
+	5300 1750 5600 1750
+Connection ~ 5600 1750
+Wire Wire Line
+	5300 2100 5600 2100
+Connection ~ 5600 2100
+Wire Wire Line
+	5300 2450 5600 2450
+Connection ~ 5600 2450
+Wire Wire Line
+	5300 2800 5600 2800
+Connection ~ 5600 2800
+Wire Wire Line
+	5300 3150 5600 3150
+Connection ~ 5600 3150
+$EndSCHEMATC

@@ -1,0 +1,122 @@
+Cmp-Mod V01 Created by Cvpcb 0.201503220816+5528~22~ubuntu14.04.1-product   date = Mon 30 Mar 2015 12:41:00 PM CEST
+
+BeginCmp
+TimeStamp = /55191A97;
+Reference = D1;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /55192B29;
+Reference = D2;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /55192B67;
+Reference = D3;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /55192BA5;
+Reference = D4;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /55192BE1;
+Reference = D5;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /55191840;
+Reference = P1;
+ValeurCmp = CONN_01X10;
+IdModule  = Socket_Strips:Socket_Strip_Straight_2x05;
+EndCmp
+
+BeginCmp
+TimeStamp = /551921EF;
+Reference = R1;
+ValeurCmp = 10k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55192185;
+Reference = R2;
+ValeurCmp = 10k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55191DEF;
+Reference = R3;
+ValeurCmp = 100;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55191F48;
+Reference = R4;
+ValeurCmp = 100;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55191F7C;
+Reference = R5;
+ValeurCmp = 100;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55191FB6;
+Reference = R6;
+ValeurCmp = 100;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55191FF2;
+Reference = R7;
+ValeurCmp = 100;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55192020;
+Reference = R8;
+ValeurCmp = 10k;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55194ABC;
+Reference = U1;
+ValeurCmp = FSM2JAH;
+IdModule  = Giant Midi Keyboard:FSM2JAH;
+EndCmp
+
+BeginCmp
+TimeStamp = /55194DAF;
+Reference = U2;
+ValeurCmp = FSM2JAH;
+IdModule  = Giant Midi Keyboard:FSM2JAH;
+EndCmp
+
+BeginCmp
+TimeStamp = /55194E03;
+Reference = U3;
+ValeurCmp = FSM2JAH;
+IdModule  = Giant Midi Keyboard:FSM2JAH;
+EndCmp
+
+EndListe
