@@ -1,7 +1,7 @@
 (export (version D)
   (design
-    (source /home/tuleu/devel/github.com/giant-midi-keyboard/cad/elec/Front-panel/front-panel.sch)
-    (date "Mon 30 Mar 2015 12:40:01 PM CEST")
+    (source /home/tuleu/devel/github.com/giant-midi-keyboard/cad/elec/front-panel/front-panel.sch)
+    (date "Wed 01 Apr 2015 11:33:16 AM CEST")
     (tool "Eeschema 0.201503220816+5528~22~ubuntu14.04.1-product")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -17,13 +17,13 @@
   (components
     (comp (ref P1)
       (value CONN_01X10)
-      (footprint Socket_Strips:Socket_Strip_Straight_2x05)
+      (footprint "Giant Midi Keyboard:Header_2x5")
       (libsource (lib conn) (part CONN_01X10))
       (sheetpath (names /) (tstamps /))
       (tstamp 55191840))
     (comp (ref D1)
       (value LED)
-      (footprint LEDs:LED-5MM)
+      (footprint "Giant Midi Keyboard:LED-5MM")
       (fields
         (field (name "Part Number") "LC503FBL1-15Q-A3-00001 "))
       (libsource (lib device) (part LED))
@@ -79,7 +79,7 @@
       (tstamp 551921EF))
     (comp (ref D2)
       (value LED)
-      (footprint LEDs:LED-5MM)
+      (footprint "Giant Midi Keyboard:LED-5MM")
       (fields
         (field (name "Part Number") "LC503FBL1-15Q-A3-00001 "))
       (libsource (lib device) (part LED))
@@ -87,7 +87,7 @@
       (tstamp 55192B29))
     (comp (ref D3)
       (value LED)
-      (footprint LEDs:LED-5MM)
+      (footprint "Giant Midi Keyboard:LED-5MM")
       (fields
         (field (name "Part Number") "LC503FBL1-15Q-A3-00001 "))
       (libsource (lib device) (part LED))
@@ -95,7 +95,7 @@
       (tstamp 55192B67))
     (comp (ref D4)
       (value LED)
-      (footprint LEDs:LED-5MM)
+      (footprint "Giant Midi Keyboard:LED-5MM")
       (fields
         (field (name "Part Number") "LC503FBL1-15Q-A3-00001 "))
       (libsource (lib device) (part LED))
@@ -103,7 +103,7 @@
       (tstamp 55192BA5))
     (comp (ref D5)
       (value LED)
-      (footprint LEDs:LED-5MM)
+      (footprint "Giant Midi Keyboard:LED-5MM")
       (fields
         (field (name "Part Number") "LC503FBL1-15Q-A3-00001 "))
       (libsource (lib device) (part LED))
@@ -134,17 +134,6 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 55194E03)))
   (libparts
-    (libpart (lib device) (part R)
-      (description Resistor)
-      (footprints
-        (fp R_*)
-        (fp Resistor_*))
-      (fields
-        (field (name Reference) R)
-        (field (name Value) R))
-      (pins
-        (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive))))
     (libpart (lib device) (part LED)
       (footprints
         (fp LED-3MM)
@@ -160,6 +149,17 @@
       (pins
         (pin (num 1) (name A) (type passive))
         (pin (num 2) (name K) (type passive))))
+    (libpart (lib device) (part R)
+      (description Resistor)
+      (footprints
+        (fp R_*)
+        (fp Resistor_*))
+      (fields
+        (field (name Reference) R)
+        (field (name Value) R))
+      (pins
+        (pin (num 1) (name ~) (type passive))
+        (pin (num 2) (name ~) (type passive))))
     (libpart (lib conn) (part CONN_01X10)
       (footprints
         (fp Pin_Header_Straight_1X10)
@@ -192,10 +192,10 @@
         (pin (num 3) (name 3) (type input))
         (pin (num 4) (name 4) (type input)))))
   (libraries
-    (library (logical conn)
-      (uri /usr/share/kicad/library/conn.lib))
     (library (logical device)
       (uri /usr/share/kicad/library/device.lib))
+    (library (logical conn)
+      (uri /usr/share/kicad/library/conn.lib))
     (library (logical giant_midi_keyboard)
       (uri /home/tuleu/devel/github.com/giant-midi-keyboard/cad/elec/giant_midi_keyboard.lib)))
   (nets
