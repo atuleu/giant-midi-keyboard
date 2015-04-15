@@ -68,19 +68,16 @@ void SetupHardware () {
 int main (void) {
 	SetupHardware();
 
-	Systime_t next = 0;
 	uint8_t display = 0x0;
-	Print(display);
 	while(1) {
-		if( (GetSystime() - next) > LOOP_IN_MS) {
-			display = (display + 1);
-			if ( display > 0x04) {
-				PrintError(0x55);
-			}
-			Print(display);
-			next += LOOP_IN_MS;
+		Event_t events = ProcessInterface();
+		
+		if (events & BUTTON_0_PRESSED) {
+			++display;
 		}
 
-		ProcessInterface();
+		
+		Print(display);
+
 	}
 }
