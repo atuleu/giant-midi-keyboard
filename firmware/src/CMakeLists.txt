@@ -1,6 +1,10 @@
-set(SRC_FILES main.c )
+set(SRC_FILES main.c 
+              Systime.c
+              UserInterface.c
+              )
 
-set(HDR_FILES )
+set(HDR_FILES Systime.h
+	          UserInterface.h)
 
 add_definitions("-std=c99" "-DF_USB=16000000")
 
