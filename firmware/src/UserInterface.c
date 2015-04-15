@@ -66,8 +66,6 @@ void Print(uint8_t value) {
 	s_UI.displayState = CHANGED;
 }
 
-#define PrintErrorLSB(err) PrintLSB( (err) | 0x10);
-
 
 void PrintError(uint8_t error) {
 	if(s_UI.error) {
@@ -76,7 +74,7 @@ void PrintError(uint8_t error) {
 
 	s_UI.error = error;
 	s_UI.displayState = PRINT_LSB;
-	PrintErrorLSB(error);
+	PrintLSB(error & 0x0f);
 	s_UI.loopTime = GetSystime() + LOOP_IN_MS;
 
 }
@@ -99,14 +97,16 @@ void ProcessInterface() {
 		}
 		switch(s_UI.displayState) {
 		case PRINT_LSB :
-			PrintErrorLSB(s_UI.error & 0x0f);
+			PrintLSB(s_UI.error & 0x0f);
 			break;
 		case BLACK_1:
+			PrintLSB(0x00);
+			break;
 		case BLACK_2:
 			PrintLSB(0x10);
 			break;
 		case  PRINT_MSB:
-			PrintErrorLSB( (s_UI.error & 0xf0) >> 4);
+			PrintLSB( ((s_UI.error & 0xf0) >> 4) | 0x10);
 			break;
 		}
 

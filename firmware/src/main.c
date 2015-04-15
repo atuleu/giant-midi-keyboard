@@ -75,7 +75,7 @@ int main (void) {
 		if( (GetSystime() - next) > LOOP_IN_MS) {
 			display = (display + 1);
 			if ( display > 0x04) {
-				PrintError(0xaa);
+				PrintError(0x55);
 			}
 			Print(display);
 			next += LOOP_IN_MS;
