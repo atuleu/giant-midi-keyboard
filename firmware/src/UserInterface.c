@@ -93,14 +93,17 @@ void ProcessInterface() {
 	}
 
 	if ( (GetSystime() - s_UI.loopTime) > LOOP_IN_MS ) {
-		s_UI.displayState = (s_UI.displayState + 1) % NUM_STATES;
+		s_UI.displayState += 1;
+		if (s_UI.displayState > 3) {
+			s_UI.displayState = 0;
+		}
 		switch(s_UI.displayState) {
 		case PRINT_LSB :
 			PrintErrorLSB(s_UI.error & 0x0f);
 			break;
 		case BLACK_1:
 		case BLACK_2:
-			PrintLSB(0);
+			PrintLSB(0x10);
 			break;
 		case  PRINT_MSB:
 			PrintErrorLSB( (s_UI.error & 0xf0) >> 4);

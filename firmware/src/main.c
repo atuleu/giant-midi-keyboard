@@ -73,7 +73,10 @@ int main (void) {
 	Print(display);
 	while(1) {
 		if( (GetSystime() - next) > LOOP_IN_MS) {
-			display = (display + 1) & 0x1f;
+			display = (display + 1);
+			if ( display > 0x04) {
+				PrintError(0xaa);
+			}
 			Print(display);
 			next += LOOP_IN_MS;
 		}
