@@ -4,3 +4,6 @@
 *.dsn
 *.ses
 $*
+*.ps
+_autosave-*
+*.kicad_pcb-bak
