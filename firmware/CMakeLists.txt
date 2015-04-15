@@ -32,3 +32,4 @@ if(NOT ARDUINO_SERIAL_PROG)
 endif(NOT ARDUINO_SERIAL_PROG)
 
 
+add_subdirectory(src)
