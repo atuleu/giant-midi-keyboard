@@ -46,7 +46,7 @@ const USB_Descriptor_Device_t DeviceDescriptor = {
 	.ProductStrIndex      = STR_ID_Product,
 	.SerialNumStrIndex    = NO_DESCRIPTOR,
 
-	.NumberOfConfiguration = FIXED_NUM_CONFIGURATIONS
+	.NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
 };
 
 
@@ -75,7 +75,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 			.Type = DTYPE_Interface
 		},
 
-		.InterfaceNumber  = INTERFACE_ID_AudioControl,
+		.InterfaceNumber  = IF_ID_AudioControl,
 		.AlternateSetting = 0,
 
 		.TotalEndpoints   = 0,
@@ -98,7 +98,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 		.TotalLength     = sizeof(USB_Audio_Descriptor_Interface_AC_t),
 
 		.InCollection    = 1,
-		.InterfaceNumber = INTERFACE_ID_AudioStream,
+		.InterfaceNumber = IF_ID_AudioStream,
 	},
 
 	.Audio_StreamInterface = {
@@ -107,7 +107,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 			.Type = DTYPE_Interface
 		},
 
-		.InterfaceNumber  = INTERFACE_ID_AudioStream,
+		.InterfaceNumber  = IF_ID_AudioStream,
 		.AlternateSetting = 0,
 
 		.TotalEndpoints   = 1,
@@ -237,15 +237,15 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 		break;
 	case DTYPE_String:
 		switch (DescriptorNumber) {
-		case STRING_ID_Language:
+		case STR_ID_Language:
 			Address = &LanguageString;
 			Size    = pgm_read_byte(&LanguageString.Header.Size);
 			break;
-		case STRING_ID_Manufacturer:
+		case STR_ID_Manufacturer:
 			Address = &ManufacturerString;
 			Size    = pgm_read_byte(&ManufacturerString.Header.Size);
 			break;
-		case STRING_ID_Product:
+		case STR_ID_Product:
 			Address = &ProductString;
 			Size    = pgm_read_byte(&ProductString.Header.Size);
 			break;

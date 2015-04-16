@@ -74,10 +74,11 @@ int main (void) {
 		
 		if (events & BUTTON_0_PRESSED) {
 			++display;
+			Print(display);
 		}
-
 		
-		Print(display);
+		
 
+		ProcessUSB();
 	}
 }
