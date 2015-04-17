@@ -16,8 +16,14 @@ typedef enum DisplayState {
 	CHANGED = 5
 } DisplayState_e;
 
+typedef enum ButtonState {
+	BUTTON_UP = 0x0,
+	BUTTON_TIME_THRESHOLD = 0x1,
+	BUTTON_DOWN = 0x2,
+} ButtonState_e;
+
 typedef struct ButtonData {
-	uint8_t state;
+	ButtonState_e state;
 	Systime_t pushedOnDate;
 } ButtonData_t;
 
@@ -48,7 +54,7 @@ void InitUserInterface() {
 	s_UI.lastEvents = 0x0;
 	s_UI.currentEvents = 0x0;
 	for(unsigned int i = 0 ; i < 3; ++i) {
-		s_UI.buttons[i].state = 0x00;
+		s_UI.buttons[i].state = BUTTON_UP;
 	}
 	//Init LED output;
 	// 0 is A10 is PB6
@@ -101,57 +107,70 @@ void PrintError(uint8_t error) {
 }
 
 
-
-Event_t ProcessInterface() {
-	Systime_t currentTime = GetSystime();
-
-	Event_t pressed = 0x00;
-	Event_t toReturn = 0x00;
+uint8_t ReadButtonStatus() {
+	
+	uint8_t buttonStatus = 0x00;
+	uint8_t pf = PINF;
+	uint8_t pe = PINE;
 	// I0 : A5 : PF0
 	// I1 : D7 : PE6  
 	// I2 : A4 : PF1
-	uint8_t pf = PINF;
-	uint8_t pe = PINE;
-	
+
 	if ( (pf & _BV(0)) == 0x00 ) {
-		pressed |= BUTTON_0_PRESSED;
+		buttonStatus |= BUTTON_0_PRESSED;
 	}	
 	
 	if ( (pe & _BV(6)) == 0x00 ) {
-		pressed |= BUTTON_1_PRESSED;
+		buttonStatus |= BUTTON_1_PRESSED;
 	}	
 
 	
 	if ( (pf & _BV(1)) == 0x00 ) {
-		pressed |= BUTTON_2_PRESSED;
+		buttonStatus |= BUTTON_2_PRESSED;
 	}
 
+	return buttonStatus;
+}
+
+
+Event_t ProcessPushButton(Systime_t currentTime) {
+	uint8_t pressed = ReadButtonStatus();
+	Event_t toReturn = 0x00;
+	
 	for (unsigned int i = 0; i < 3 ; ++i ) {
-		if ( (pressed & (1 << i)) == 0 ) {
-			s_UI.buttons[i].state = 0x0;
+		if ( (pressed & _BV(i)) == 0 ) { // button i is UP
+			if (s_UI.buttons[i].state == BUTTON_DOWN ) { // was previously down
+				toReturn |= _BV(i + BI_BUTTON_RELEASED); // report release event
+			}
+			s_UI.buttons[i].state = BUTTON_UP;		   
 			continue;
 		}
 
-		if (s_UI.buttons[i].state == 0x00 ) {
+		
+		if (s_UI.buttons[i].state == BUTTON_UP ) {//button just pressed down
 			s_UI.buttons[i].pushedOnDate = currentTime;
-			s_UI.buttons[i].state = 0x01;
+			s_UI.buttons[i].state = BUTTON_TIME_THRESHOLD;
 			continue;
 		}
 
-		if (s_UI.buttons[i].state == 0x01 && 
+		//button pressed down more than BUTTON_TIME_THRESHOLD ms
+		if (s_UI.buttons[i].state == BUTTON_TIME_THRESHOLD && 
 		    (currentTime - s_UI.buttons[i].pushedOnDate) > BUTTON_ON_THRESHOLD ) {
-			s_UI.buttons[i].state = 0x02;
-			toReturn |= (1 << i);
+			s_UI.buttons[i].state = BUTTON_DOWN;
+			toReturn |= _BV(i);
 		}
 	}
 
+	return toReturn;
+}
 
+void ProcessDisplay(Systime_t currentTime) {
 	if (s_UI.error == 0 ) {
 		if (s_UI.displayState == CHANGED) {
 			PrintLSB(s_UI.value);
 			s_UI.displayState = PRINT_LSB;
 		}
-		return toReturn;
+		return;
 	}
 
 	if ( (currentTime - s_UI.displayLoopTime) > DISPLAY_LOOP_MS ) {
@@ -176,7 +195,14 @@ Event_t ProcessInterface() {
 
 		s_UI.displayLoopTime += DISPLAY_LOOP_MS;
 	}
+}
 
-	return toReturn;
+Event_t ProcessInterface() {
+	Systime_t currentTime = GetSystime();
+
+	Event_t events = ProcessPushButton(currentTime);
+	ProcessDisplay(currentTime);
+   
+	return events;
 }
 
