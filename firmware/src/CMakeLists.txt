@@ -51,4 +51,4 @@ add_avr_executable(giant-MIDI-keyboard
 	HDRS ${HDR_FILES}
 	PROGRAMMER dragon_isp)
 
-target_link_libraries(giant-MIDI-keyboard lufa-core-device)
+avr_target_link_libraries(giant-MIDI-keyboard lufa-core-device)

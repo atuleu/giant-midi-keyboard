@@ -358,9 +358,9 @@ function(add_avr_library LIBRARY_NAME)
 
 	if(NOT ARGS_SRCS)
 		message(FATAL_ERROR "You must provide at least one source file")
-	endif(NOT_ARGS_SRCS)
+	endif(NOT ARGS_SRCS)
 
-	set(lib_file ${LIBRARY_NAME}${MCU_TYPE_FOR_FILENAME})
+	set(lib_file ${LIBRARY_NAME}-${ARGS_MCU})
 
 	add_library(${lib_file} STATIC ${ARGS_SRCS} ${ARGS_HDRS})
 
