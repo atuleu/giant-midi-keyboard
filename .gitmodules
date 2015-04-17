@@ -1,6 +1,3 @@
-[submodule "firmware/arduino-cmake"]
-	path = firmware/arduino-cmake
-	url = git@github.com:queezythegreat/arduino-cmake
 [submodule "firmware/LUFA"]
 	path = firmware/LUFA
 	url = git@github.com:abcminiuser/lufa
