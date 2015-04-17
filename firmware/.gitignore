@@ -1,1 +1,4 @@
 build/
+arduino-cmake
+build-arduino
+*.orig
