@@ -33,7 +33,9 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 // Address of the endpoint used for device-to-host transfers
-#define MIDI_STREAM_IN_EPADDR (ENDPOINT_DIR_IN | 1)
+#define MIDI_STREAM_IN_EPADDR  (ENDPOINT_DIR_IN  | 1)
+// Address of the endpoint used for host-to-device transfers
+#define MIDI_STREAM_OUT_EPADDR (ENDPOINT_DIR_OUT | 2)
 // Endpoint size of the audio isochronous streaming
 #define MIDI_STREAM_EPSIZE 64
 
@@ -48,8 +50,12 @@ typedef struct {
 	// MIDI Audio Streaming Interface
 	USB_Descriptor_Interface_t                Audio_StreamInterface;
 	USB_MIDI_Descriptor_AudioInterface_AS_t   Audio_StreamInterface_SPC;
+	USB_MIDI_Descriptor_InputJack_t           MIDI_In_Jack_Emb;
 	USB_MIDI_Descriptor_InputJack_t           MIDI_In_Jack_Ext;
 	USB_MIDI_Descriptor_OutputJack_t          MIDI_Out_Jack_Emb;
+	USB_MIDI_Descriptor_OutputJack_t          MIDI_Out_Jack_Ext;
+	USB_Audio_Descriptor_StreamEndpoint_Std_t MIDI_In_Jack_Endpoint;
+	USB_MIDI_Descriptor_Jack_Endpoint_t       MIDI_In_Jack_Endpoint_SPC;
 	USB_Audio_Descriptor_StreamEndpoint_Std_t MIDI_Out_Jack_Endpoint;
 	USB_MIDI_Descriptor_Jack_Endpoint_t       MIDI_Out_Jack_Endpoint_SPC;
 } USB_Descriptor_Configuration_t;

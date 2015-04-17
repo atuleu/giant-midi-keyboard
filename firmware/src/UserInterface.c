@@ -95,6 +95,11 @@ void Print(uint8_t value) {
 
 
 void PrintError(uint8_t error) {
+	if (error == 0) {
+		s_UI.error = 0;
+		return;
+	}
+
 	if(s_UI.error) {
 		return;
 	}

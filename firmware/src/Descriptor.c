@@ -29,7 +29,10 @@
 
 
 const USB_Descriptor_Device_t DeviceDescriptor = {
-	.Header = { .Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
+	.Header = { 
+		.Size = sizeof(USB_Descriptor_Device_t),
+		.Type = DTYPE_Device
+	},
 	
 	.USBSpecification = VERSION_BCD(1,1,0),
 	.Class            = USB_CSCP_NoDeviceClass,
@@ -110,7 +113,7 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 		.InterfaceNumber  = IF_ID_AudioStream,
 		.AlternateSetting = 0,
 
-		.TotalEndpoints   = 1,
+		.TotalEndpoints   = 2,
 
 		.Class    = AUDIO_CSCP_AudioClass,
 		.SubClass = AUDIO_CSCP_MIDIStreamingSubclass,
@@ -132,6 +135,19 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 		                offsetof(USB_Descriptor_Configuration_t, Audio_StreamInterface_SPC))
 	},
 
+	.MIDI_In_Jack_Emb = {
+		.Header = {
+			.Size = sizeof(USB_MIDI_Descriptor_InputJack_t), 
+			.Type = DTYPE_CSInterface
+		},
+		.Subtype = AUDIO_DSUBTYPE_CSInterface_InputTerminal,
+
+		.JackType = MIDI_JACKTYPE_Embedded,
+		.JackID   = 0x01,
+
+		.JackStrIndex = NO_DESCRIPTOR
+	},
+	
 	.MIDI_In_Jack_Ext = {
 		.Header = {
 			.Size = sizeof(USB_MIDI_Descriptor_InputJack_t),
@@ -160,6 +176,51 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 		.SourcePinID  = {0x01},
 
 		.JackStrIndex = NO_DESCRIPTOR
+	},
+
+	.MIDI_Out_Jack_Ext = {
+		.Header = {
+			.Size = sizeof(USB_MIDI_Descriptor_OutputJack_t),
+			.Type = DTYPE_CSInterface
+		},
+		.Subtype = AUDIO_DSUBTYPE_CSInterface_OutputTerminal,
+
+		.JackType = MIDI_JACKTYPE_External,
+		.JackID   = 0x04,
+
+		.NumberOfPins = 1,
+		.SourceJackID = {0x01},
+		.SourcePinID  = {0x01},
+
+		.JackStrIndex = NO_DESCRIPTOR
+	},
+
+	.MIDI_In_Jack_Endpoint = {
+		.Endpoint = {
+			.Header = {
+				.Size = sizeof(USB_Audio_Descriptor_StreamEndpoint_Std_t),
+				.Type = DTYPE_Endpoint
+			},
+
+			.EndpointAddress   = MIDI_STREAM_OUT_EPADDR,
+			.Attributes        = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
+			.EndpointSize      = MIDI_STREAM_EPSIZE,
+			.PollingIntervalMS = 0x05
+		},
+
+		.Refresh            = 0,
+		.SyncEndpointNumber = 0
+	},
+
+	.MIDI_In_Jack_Endpoint_SPC = {
+		.Header = {
+			.Size = sizeof(USB_MIDI_Descriptor_Jack_Endpoint_t),
+			.Type = DTYPE_CSEndpoint
+		},
+		.Subtype = AUDIO_DSUBTYPE_CSEndpoint_General,
+
+		.TotalEmbeddedJacks = 0x01,
+		.AssociatedJackID   = {0x01}
 	},
 
 	.MIDI_Out_Jack_Endpoint = {
@@ -192,30 +253,14 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 };
 
 
-const USB_Descriptor_String_t LanguageString = {
-	.Header= {
-		.Size = USB_STRING_LEN(1),
-		.Type = DTYPE_String
-	},
-	.UnicodeString= {LANGUAGE_ID_ENG}
-};
+const USB_Descriptor_String_t LanguageString =
+	USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
 
-const USB_Descriptor_String_t ManufacturerString = {
-	.Header= {
-		.Size = USB_STRING_LEN(7),
-		.Type = DTYPE_String
-	},
-	.UnicodeString= L"Balelec"
-};
+const USB_Descriptor_String_t PROGMEM ManufacturerString =
+	USB_STRING_DESCRIPTOR(L"Dean Camera");
 
-const USB_Descriptor_String_t ProductString= {
-	.Header= {
-		.Size = USB_STRING_LEN(19),
-		.Type = DTYPE_String
-	},
-	.UnicodeString= L"Giant MIDI Keyboard"
-};
-
+const USB_Descriptor_String_t PROGMEM ProductString =
+	USB_STRING_DESCRIPTOR(L"LUFA MIDI Demo");
 
 uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
                                     const uint8_t wIndex,
@@ -225,7 +270,6 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 
 	const void* Address = NULL;
 	uint16_t    Size    = NO_DESCRIPTOR;
-
 	switch (DescriptorType) {
 	case DTYPE_Device:
 		Address = &DeviceDescriptor;

@@ -5,6 +5,8 @@
 
 #include "Systime.h"
 #include "UserInterface.h"
+#include "USB.h"
+
 
 /* SetupHardware is setting up all global register */
 
@@ -24,7 +26,7 @@ void SetupHardware () {
 	USBCON &= ~(1 << VBUSTE); 
     
 	// Disable the VUSB pad 
-	USBCON &= ~(1 << OTGPADE); 
+	//USBCON &= ~(1 << OTGPADE); 
     
 	// Freeze the USB clock 
 	USBCON &= ~(1 << FRZCLK); 
@@ -33,10 +35,12 @@ void SetupHardware () {
 	UHWCON &= ~(1 << UVREGE); 
     
 	// Clear the IVBUS Transition Interrupt flag 
-	USBINT &= ~(1 << VBUSTI); 
+	USBINT &= ~(1 << VBUSTI ); 
+	USBINT &= ~(1 << SUSPE ); 
+	USBINT &= ~(1 << EORSTE ); 
     
 	// Physically detact USB (by disconnecting internal pull-ups on D+ and D-) 
-	UDCON |= (1 << DETACH); 
+	//UDCON |= (1 << DETACH); 
 
 	//Arduino's micro bootloader let the USB interrupt on, but if we
 	//are not using USB, well it blows our face because ISR routine
@@ -44,8 +48,8 @@ void SetupHardware () {
 	//freeze will be great too. This is teh first step because we do
 	//not want our USB host to wake and crash us.
 
-	UDIEN &= ~(_BV(SUSPE) | _BV(EORSTE) );
-
+	//UDIEN &= ~(_BV(SUSPE) | _BV(EORSTE) );
+	
 	//this is not stricly needed as set by Arduino Micro's
 	//bootloader. But just to be absolutely certain :
 
@@ -57,10 +61,17 @@ void SetupHardware () {
 
 	//rest of the init here
 
-	_delay_ms(20);
+	//_delay_ms(20);
+
+	InitUserInterface();
+	InitUSB();
 
 	InitSystime();
-	InitUserInterface();
+
+
+
+
+	sei();
 }
 
 #define LOOP_IN_MS 1000
@@ -69,16 +80,8 @@ int main (void) {
 	SetupHardware();
 
 	uint8_t display = 0x0;
-	while(1) {
-		Event_t events = ProcessInterface();
-		
-		if (events & BUTTON_0_PRESSED) {
-			++display;
-			Print(display);
-		}
-		
-		
-
-		ProcessUSB();
+	while(1) {		
+		Event_t evs = ProcessInterface();
+		ProcessUSB(evs);
 	}
 }
