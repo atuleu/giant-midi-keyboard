@@ -158,6 +158,7 @@ uint8_t ProcessSPI() {
 	if (! (SPSR & _BV(SPIF) ) ){
 		return retValue;
 	}
+	
 	uint16_t data = SPDR;
 
 #define keyIdx() s_KR.keyReadIndex

@@ -37,7 +37,7 @@ void SetupHardware () {
 int main (void) {
 	SetupHardware();
 
-	StartKeyReader();
+	//	StartKeyReader();
 	while(1) {		
 		Event_t evs = ProcessInterface();
 		ProcessUSB(evs);
