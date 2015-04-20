@@ -1,5 +1,6 @@
 #include "KeyReader.h"
 
+#include <avr/io.h>
 
 #define KEY_DATA_SIZE 4
 #define KEY_DATA_MASK (KEY_DATA_SIZE - 1)
@@ -114,7 +115,7 @@ void InitKeyReader() {
 	UnselectAllChip(); // unselect all chips
 	
 
-	//Init structure
+	//Init data structure
 	Keys_e keyFromChipIndex0[8] = {	C_1, C_SHARP_1, D_1, D_SHARP_1,
 		E_1, F_1, F_SHARP_1,G_1 };
 	Keys_e keyFromChipIndex1[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, NUM_KEYS,
@@ -132,7 +133,90 @@ void InitKeyReader() {
 	s_KR.keyReadIndex = 0x0;
 	s_KR.byteReadIndex = 0x0;
 	
+	// Sets MOSI and SCK as output
+	DDRB |= _BV(1) | _BV(2) | _BV(0);
+	
+
+	/* Enable SPI, Master, set clock rate fck/16 */
+	SPCR = _BV(SPE) | _BV(MSTR)| _BV(SPR0);
+   
+};
+
+void StartKeyReader() {
+	//start to read first byte
+	UnselectAllChip();
+	SelectChip0();
+	PORTB |= _BV(0);
+	SPDR = s_KR.keys[0].bytes[0];
 }
 
+
+#include "UserInterface.h"
+
+uint8_t ProcessSPI() {
+	uint8_t retValue = NUM_KEYS;
+	if (! (SPSR & _BV(SPIF) ) ){
+		return retValue;
+	}
+	uint16_t data = SPDR;
+
+#define keyIdx() s_KR.keyReadIndex
+#define valueIdx(i) (s_KR.keys[i].readCount & KEY_DATA_MASK )
+	//put the data at the right place
+	if (s_KR.byteReadIndex == 1) {
+		s_KR.keys[keyIdx()].values[valueIdx(keyIdx())] = (data & 0x03) << 8;
+	} else if (s_KR.byteReadIndex == 2) {
+		s_KR.keys[keyIdx()].values[valueIdx(keyIdx())] |= data & 0xff;
+		++s_KR.keys[keyIdx()].readCount;
+	}
+
+	//increment the key / byte to pull
+	++s_KR.byteReadIndex;
+	if (s_KR.byteReadIndex == 3) {
+		//we need to increment key
+		// key update should be notified
+		retValue = keyIdx();
+		
+		s_KR.byteReadIndex = 0;
+		s_KR.keyReadIndex += 1;
+		if (keyIdx() >= NUM_KEYS ) {
+			//we turn arroudn all keys;
+			keyIdx() = 0;
+		}
+		
+		// we select a new chip
+		UnselectAllChip();
+		(s_KR.keys[keyIdx()].selectChip)();
+
+	}
+
+	//start to pull out a new byte
+	SPDR = s_KR.keys[keyIdx()].bytes[s_KR.byteReadIndex];
+
+	return retValue;
+
+#undef keyIdx
+#undef valueIdx
+}
+
+MIDI_EventPacket_t event;
+
+MIDI_EventPacket_t * ProcessKey(Keys_e kId) {
+	static uint8_t foo = 0;
+
+	event.Event = MIDI_EVENT(0,MIDI_COMMAND_NOTE_ON);
+	event.Data1 = MIDI_COMMAND_NOTE_ON | MIDI_CHANNEL(1);
+	event.Data2 = 0xaa;
+	event.Data3 = ++foo;//s_KR.keyReadIndex;;//s_KR.keys[kId].readCount;
+	return &event;
+}
+
+
+
 MIDI_EventPacket_t * ReadNextKeyEvent() {
+	uint8_t updatedKey = ProcessSPI();
+	if (updatedKey < NUM_KEYS) {
+		return ProcessKey(updatedKey);
+	}
+	return NULL;
 }

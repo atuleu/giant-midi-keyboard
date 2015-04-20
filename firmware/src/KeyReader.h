@@ -6,6 +6,8 @@
 
 void InitKeyReader();
 
+void StartKeyReader();
+
 MIDI_EventPacket_t * ReadNextKeyEvent();
 
 

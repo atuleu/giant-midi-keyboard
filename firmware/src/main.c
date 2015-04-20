@@ -37,7 +37,7 @@ void SetupHardware () {
 int main (void) {
 	SetupHardware();
 
-	uint8_t display = 0x0;
+	StartKeyReader();
 	while(1) {		
 		Event_t evs = ProcessInterface();
 		ProcessUSB(evs);
@@ -48,7 +48,7 @@ int main (void) {
 		
 		if ( midiEvent->Data1 & 0xf0 == MIDI_COMMAND_NOTE_ON) {
 			//Event is a note ON, we display 5 MSB of note's velocity
-			Print(midiEvent->Data3 >> 2);
+			Print(midiEvent->Data3);
 		}
 	}
 }
