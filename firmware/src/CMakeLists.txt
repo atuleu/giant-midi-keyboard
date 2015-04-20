@@ -3,12 +3,14 @@ set(SRC_FILES main.c
               UserInterface.c
               Descriptor.c
               USB.c
+              KeyReader.c
               )
 
 set(HDR_FILES Systime.h
 	          UserInterface.h
 	          Descriptor.h
 	          USB.h
+	          KeyReader.h
 	          )
 
 set(LUFA_ROOT ${PROJECT_SOURCE_DIR}/LUFA)
@@ -65,3 +67,6 @@ add_avr_executable(giant-MIDI-keyboard
 	UPLOADTOOL_OPTIONS -C ${PROJECT_SOURCE_DIR}/avrdude.conf)
 
 avr_target_link_libraries(giant-MIDI-keyboard lufa-core-device)
+
+add_custom_target(upload
+	DEPENDS upload_giant-MIDI-keyboard)
