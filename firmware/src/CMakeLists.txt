@@ -61,6 +61,7 @@ add_avr_executable(giant-MIDI-keyboard
 	MCU_SPEED 16000000L
 	SRCS ${SRC_FILES}
 	HDRS ${HDR_FILES}
-	PROGRAMMER dragon_isp)
+	PROGRAMMER arduinoisp
+	UPLOADTOOL_OPTIONS -C ${PROJECT_SOURCE_DIR}/avrdude.conf)
 
 avr_target_link_libraries(giant-MIDI-keyboard lufa-core-device)
