@@ -87,7 +87,6 @@ void ProcessUSB(Event_t e) {
 
 void EVENT_USB_Device_Connect() {
 	PrintError(0);
-	Print(1);
 	//TODO : report ?
 }
 
@@ -103,10 +102,7 @@ void EVENT_USB_Device_ConfigurationChanged() {
 	configSuccess &= Endpoint_ConfigureEndpoint(MIDI_STREAM_OUT_EPADDR,EP_TYPE_BULK,MIDI_STREAM_EPSIZE,1);
 	if(configSuccess == false) {
 		PrintError(0x02);
-	} else {
-		Print(2);
 	}
-	
 	//TODO ? Report
 }
 
