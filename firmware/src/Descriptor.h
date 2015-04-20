@@ -29,7 +29,7 @@
 #define GMK_USB_DESCRIPTOR_H_
 
 
-#include "LUFAConfig.h"
+//#include "LUFAConfig.h"
 #include <LUFA/Drivers/USB/USB.h>
 
 // Address of the endpoint used for device-to-host transfers

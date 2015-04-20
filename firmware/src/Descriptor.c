@@ -253,14 +253,31 @@ const USB_Descriptor_Configuration_t ConfigurationDescriptor = {
 };
 
 
-const USB_Descriptor_String_t LanguageString =
-	USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
+const USB_Descriptor_String_t LanguageString = {
+	.Header = {
+		.Size = USB_STRING_LEN(1),
+		.Type = DTYPE_String
+	},
+	.UnicodeString = {LANGUAGE_ID_ENG}
+};
 
-const USB_Descriptor_String_t PROGMEM ManufacturerString =
-	USB_STRING_DESCRIPTOR(L"Dean Camera");
+const USB_Descriptor_String_t ProductString = {
+	.Header = {
+		.Size = USB_STRING_LEN(16),
+		.Type = DTYPE_String
+	},
+	.UnicodeString = L"Festival Balelec"
+};
 
-const USB_Descriptor_String_t PROGMEM ProductString =
-	USB_STRING_DESCRIPTOR(L"LUFA MIDI Demo");
+const USB_Descriptor_String_t ManufacturerString = {
+	.Header = {
+		.Size = USB_STRING_LEN(19),
+		.Type = DTYPE_String
+	},
+    .UnicodeString = L"Giant MIDI Keyboard"
+};
+
+#include "UserInterface.h"
 
 uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
                                     const uint8_t wIndex,
@@ -283,15 +300,15 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 		switch (DescriptorNumber) {
 		case STR_ID_Language:
 			Address = &LanguageString;
-			Size    = pgm_read_byte(&LanguageString.Header.Size);
+			Size    = LanguageString.Header.Size;
 			break;
 		case STR_ID_Manufacturer:
 			Address = &ManufacturerString;
-			Size    = pgm_read_byte(&ManufacturerString.Header.Size);
+			Size    = ManufacturerString.Header.Size;
 			break;
 		case STR_ID_Product:
 			Address = &ProductString;
-			Size    = pgm_read_byte(&ProductString.Header.Size);
+			Size    = ProductString.Header.Size;
 			break;
 		}
 		break;

@@ -45,6 +45,8 @@
 #ifndef __LUFA_CONFIG_H__
 #define __LUFA_CONFIG_H__
 
+#define ARCH ARCH_AVR8 
+
 #if (ARCH == ARCH_AVR8)
 
 /*******************************************************************************
@@ -73,21 +75,22 @@
 // #define USB_STREAM_TIMEOUT_MS            {Insert Value Here}
 // #define NO_LIMITED_CONTROLLER_CONNECT
 #define NO_SOF_EVENTS
+#define ORDERED_EP_CONFIG
 
 /*******************************************************************************
  * USB Device Mode Driver Related Tokens: 
  ******************************************************************************/
-#define USE_RAM_DESCRIPTORS
-// #define USE_FLASH_DESCRIPTORS
+//#define USE_RAM_DESCRIPTORS
+#define USE_FLASH_DESCRIPTORS
 // #define USE_EEPROM_DESCRIPTORS
-// #define NO_INTERNAL_SERIAL
+#define NO_INTERNAL_SERIAL
 #define FIXED_CONTROL_ENDPOINT_SIZE      8
 #define DEVICE_STATE_AS_GPIOR            0
 #define FIXED_NUM_CONFIGURATIONS         1
 // #define CONTROL_ONLY_DEVICE
 // #define INTERRUPT_CONTROL_ENDPOINT
-// #define NO_DEVICE_REMOTE_WAKEUP
-// #define NO_DEVICE_SELF_POWER
+#define NO_DEVICE_REMOTE_WAKEUP
+#define NO_DEVICE_SELF_POWER
 
 /*******************************************************************************
  *  USB Host Mode Driver Related Tokens:

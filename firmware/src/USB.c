@@ -2,24 +2,62 @@
 
 
 
-void InitUSB() {
-	USB_Init();
-	PrintError(0x01);
-	// Certainly other things to do
-}
 
 
 void ProcessUSB(Event_t e) {
 	//certainly we need to fetch the device status or events to report a note.
 
 	if (USB_DeviceState != DEVICE_STATE_Configured ) {
+		USB_USBTask();
 		return;
 	}
 
 	Endpoint_SelectEndpoint(MIDI_STREAM_IN_EPADDR);
 	
-	if ( Endpoint_IsINReady()) {
-		//TODO :  parse inputs and send note on / note off		
+	if ( Endpoint_IsINReady() && e != 0) {
+
+		uint8_t MIDICommand = 0;
+		uint8_t MIDIPitch;
+
+		switch(e) {
+		case BUTTON_0_PRESSED :
+			MIDICommand = MIDI_COMMAND_NOTE_ON;
+			MIDIPitch = 0x3c;
+			break;
+		case BUTTON_1_PRESSED :
+			MIDICommand = MIDI_COMMAND_NOTE_ON;
+			MIDIPitch = 0x3d;
+			break;
+		case BUTTON_2_PRESSED :
+			MIDICommand = MIDI_COMMAND_NOTE_ON;
+			MIDIPitch = 0x3e;
+			break;
+		case BUTTON_0_RELEASED :
+			MIDICommand = MIDI_COMMAND_NOTE_OFF;
+			MIDIPitch = 0x3c;
+			break;
+		case BUTTON_1_RELEASED :
+			MIDICommand = MIDI_COMMAND_NOTE_OFF;
+			MIDIPitch = 0x3d;
+			break;
+		case BUTTON_2_RELEASED :
+			MIDICommand = MIDI_COMMAND_NOTE_OFF;
+			MIDIPitch = 0x3e;
+			break;
+		}
+
+		MIDI_EventPacket_t MIDIEvent = {
+			.Event = MIDI_EVENT(0,MIDICommand),
+			.Data1 = MIDICommand | MIDI_CHANNEL(1),
+			.Data2 = MIDIPitch,
+			.Data3 = 127,
+		};
+			
+		Endpoint_Write_Stream_LE(&MIDIEvent, sizeof(MIDIEvent), NULL);
+
+		/* Send the data in the endpoint to the host */
+		Endpoint_ClearIN();
+
 	}
 
 	
