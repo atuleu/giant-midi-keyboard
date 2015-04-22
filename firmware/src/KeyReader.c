@@ -5,6 +5,8 @@
 #define KEY_DATA_SIZE 4
 #define KEY_DATA_MASK (KEY_DATA_SIZE - 1)
 
+#define MAX_OCTAVE (NUM_KEYS - 1)
+
 
 typedef void(*SelectorFPtr)();
 
@@ -59,6 +61,7 @@ typedef struct KeyReader {
 	uint8_t byteReadIndex;
 
 	KeyData_t keys[NUM_KEYS];
+	uint8_t octave;
 } KeyReader_t;
 
 KeyReader_t s_KR;
@@ -106,7 +109,7 @@ void InitChip(const Keys_e * keysFromChipIndex, SelectorFPtr selector) {
 
 void InitKeyReader() {
 	// === Init SS pins ===
-	// CS0: 0  : PD2
+	// CS0: 0  : PD2	
 	// CS1: 2  : PD1
 	// CS2: 12 : PD6
 	// CS3: 11 : PB7
@@ -118,9 +121,9 @@ void InitKeyReader() {
 	//Init data structure
 	Keys_e keyFromChipIndex0[8] = {	C_1, C_SHARP_1, D_1, D_SHARP_1,
 		E_1, F_1, F_SHARP_1,G_1 };
-	Keys_e keyFromChipIndex1[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, NUM_KEYS,
-		B_1, A_SHARP_1, A_1,G_SHARP_1 };
-	Keys_e keyFromChipIndex2[8] = {	C_2, C_SHARP_1, D_2, D_SHARP_2,
+	Keys_e keyFromChipIndex1[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, NUM_KEYS,	
+	B_1, A_SHARP_1, A_1,G_SHARP_1 };
+	Keys_e keyFromChipIndex2[8] = {	C_2, C_SHARP_2, D_2, D_SHARP_2,
 		E_2, F_2, F_SHARP_2,G_2 };
 	Keys_e keyFromChipIndex3[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, C_3,
 		B_2, A_SHARP_2, A_2,G_SHARP_2 };
@@ -132,7 +135,7 @@ void InitKeyReader() {
 
 	s_KR.keyReadIndex = 0x0;
 	s_KR.byteReadIndex = 0x0;
-	
+	s_KR.octave = 0x00;
 	// Sets MOSI and SCK as output
 	DDRB |= _BV(1) | _BV(2) | _BV(0);
 	
@@ -176,7 +179,7 @@ uint8_t ProcessSPI() {
 	if (s_KR.byteReadIndex == 3) {
 		//we need to increment key
 		// key update should be notified
-		retValue = keyIdx();
+		retValue = s_KR.keyReadIndex;
 		
 		s_KR.byteReadIndex = 0;
 		s_KR.keyReadIndex += 1;
@@ -208,16 +211,31 @@ MIDI_EventPacket_t * ProcessKey(Keys_e kId) {
 	event.Event = MIDI_EVENT(0,MIDI_COMMAND_NOTE_ON);
 	event.Data1 = MIDI_COMMAND_NOTE_ON | MIDI_CHANNEL(1);
 	event.Data2 = 0xaa;
-	event.Data3 = ++foo;//s_KR.keyReadIndex;;//s_KR.keys[kId].readCount;
+	uint8_t idx = (s_KR.keys[kId].readCount - 1) & KEY_DATA_MASK;
+	event.Data3 = s_KR.keys[kId].values[idx] >> 5;//s_KR.keyReadIndex;;//s_KR.keys[kId].readCount;
 	return &event;
 }
 
-
-
 MIDI_EventPacket_t * ReadNextKeyEvent() {
 	uint8_t updatedKey = ProcessSPI();
-	if (updatedKey < NUM_KEYS) {
+	if (updatedKey == s_KR.octave) {
 		return ProcessKey(updatedKey);
 	}
 	return NULL;
 }
+
+
+void IncrementOctave() {
+	if (s_KR.octave == MAX_OCTAVE) {
+		return;
+	}
+	++s_KR.octave;
+}
+
+void DecrementOctave() {
+	if(s_KR.octave == 0) {
+		return;
+	}
+	--s_KR.octave;
+}
+

@@ -11,6 +11,10 @@ void StartKeyReader();
 MIDI_EventPacket_t * ReadNextKeyEvent();
 
 
+void IncrementOctave();
+void DecrementOctave();
+
+
 
 
 #endif //GMK_KEYREADER_H_
