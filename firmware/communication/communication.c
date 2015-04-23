@@ -15,7 +15,6 @@ GmkUSBIFInstructionMetadata_t IMetaData[GMK_USBIF_INST_NUMBER] = {
 	{ REQ_VENDOR_IN , 2 * 25 , NULL } // FETCH_CELL_VALUES
 };
 
-
 #ifdef __cplusplus
 }
 #endif //__cplusplus

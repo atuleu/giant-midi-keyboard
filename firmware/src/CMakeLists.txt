@@ -5,6 +5,7 @@ set(SRC_FILES main.c
               USB.c
               KeyReader.c
               ../communication/communication.c
+              Registers.c
               )
 
 set(HDR_FILES Systime.h
@@ -13,6 +14,7 @@ set(HDR_FILES Systime.h
 	          USB.h
 	          KeyReader.h
               ../communication/communication.h
+              Registers.h
 	          )
 
 set(LUFA_ROOT ${PROJECT_SOURCE_DIR}/LUFA)
