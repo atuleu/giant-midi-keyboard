@@ -1,13 +1,16 @@
 set(COMMON_COMMUNICATION_ROOT ${PROJECT_SOURCE_DIR}/../../firmware)
 
 set(SRCS main.cpp
-	     ${COMMON_COMMUNICATION_ROOT}/communication/communication.c)
+	     ${COMMON_COMMUNICATION_ROOT}/communication/communication.c
+	     MainWindow.cpp
+	     )
 
-set(HDRS )
+set(HDRS MainWindow.h
+	     )
 
-set(UI_RAW_FILES )
+set(UI_RAW_FILES MainWindow.ui)
 
-set(TO_MOC_FILES )
+set(TO_MOC_FILES MainWindow.h)
 
 if(UI_RAW_FILES)
 	qt4_wrap_ui(UI_FILES ${UI_RAW_FILES})
@@ -19,7 +22,7 @@ endif(TO_MOC_FILES)
 
 include(${QT_USE_FILE})
 
-include_directories(${COMMON_COMMUNICATION_ROOT} ${DEPS_INCLUDE_DIRS})
+include_directories(${COMMON_COMMUNICATION_ROOT} ${DEPS_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(giant-midi-keyboard-calibrator ${SRCS} ${HDRS} ${UI_FILES} ${MOC_FILES})
 
