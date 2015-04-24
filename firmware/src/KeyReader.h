@@ -8,8 +8,10 @@ void InitKeyReader();
 
 void StartKeyReader();
 
-MIDI_EventPacket_t * ReadNextKeyEvent();
+void ProcessKeyReader();
 
+MIDI_EventPacket_t * NextKeyEvent();
+void ReleaseEvent();
 
 void IncrementOctave();
 void DecrementOctave();
