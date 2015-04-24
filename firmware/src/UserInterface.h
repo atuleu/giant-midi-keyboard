@@ -11,7 +11,7 @@
 typedef enum DeviceError {
 	GMK_ERR_NO_ERROR                    = 0,
 	GMK_ERR_NO_USB_CONNECTION           = 1,
-	GMK_ERR_USB_CONFIGURATION_ERROR     = 2,
+	GMK_ERR_USB_CONFIGURATION           = 2,
 	GMK_ERR_INVALID_HOST_VENDOR_REQUEST = 3,
 } DeviceError_e;
 

@@ -11,6 +11,7 @@
 #include "UserInterface.h"
 
 
+void InitUSB();
 void ProcessUSB(Event_t e);
 
 void EVENT_USB_Device_Connect(void);

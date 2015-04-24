@@ -1,8 +1,27 @@
 #include "USB.h"
 
+#include <communication/communication.h>
 
+#include "Registers.h"
 
+void ReadAllCallback(uint16_t index, uint16_t value);
+void SetRegisterCallback(uint16_t index, uint16_t value);
+void SaveInEEPROMCallback(uint16_t index, uint16_t value);
+void FetchCellValuesCallback(uint16_t index, uint16_t value);
 
+typedef void(*RequestCallback)(uint16_t,uint16_t);
+
+void InitUSB() {
+	USB_Init();
+
+	//set ups the callback here
+	IMetaData[GMK_USBIF_INST_READ_ALL_REGISTER].userData = &ReadAllCallback;
+	IMetaData[GMK_USBIF_INST_SET_REGISTER].userData      = &SetRegisterCallback;
+	IMetaData[GMK_USBIF_INST_SAVE_EEPROM].userData       = &SaveInEEPROMCallback;
+	IMetaData[GMK_USBIF_INST_FETCH_CELL_VALUES].userData = &FetchCellValuesCallback;
+	
+	PrintError(GMK_ERR_NO_USB_CONNECTION);
+}
 
 void ProcessUSB(Event_t e) {
 	//certainly we need to fetch the device status or events to report a note.
@@ -15,6 +34,10 @@ void ProcessUSB(Event_t e) {
 	Endpoint_SelectEndpoint(MIDI_STREAM_IN_EPADDR);
 	
 	if ( Endpoint_IsINReady() && e != 0) {
+		
+		// One could do : write data, and continue until
+		// IsReadWriteAllowed does not allow to write stuff, or cannot
+		// write event to the endpoint.
 
 		uint8_t MIDICommand = 0;
 		uint8_t MIDIPitch;
@@ -86,12 +109,11 @@ void ProcessUSB(Event_t e) {
 }
 
 void EVENT_USB_Device_Connect() {
-	PrintError(0);
-	//TODO : report ?
+	PrintError(GMK_ERR_NO_ERROR);
 }
 
 void EVENT_USB_Device_Disconnect() {
-	PrintError(1);
+	PrintError(GMK_ERR_NO_USB_CONNECTION);
 }
 	
 
@@ -101,20 +123,71 @@ void EVENT_USB_Device_ConfigurationChanged() {
 	configSuccess &= Endpoint_ConfigureEndpoint(MIDI_STREAM_IN_EPADDR,EP_TYPE_BULK,MIDI_STREAM_EPSIZE,1);
 	configSuccess &= Endpoint_ConfigureEndpoint(MIDI_STREAM_OUT_EPADDR,EP_TYPE_BULK,MIDI_STREAM_EPSIZE,1);
 	if(configSuccess == false) {
-		PrintError(0x02);
+		PrintError(GMK_ERR_USB_CONFIGURATION);
 	}
 	//TODO ? Report
 }
 
-#define REQ_VENDOR_OUT ( (  0 << 7 ) | ( 2 << 5 ) | ( 0 << 0 ) )
-
-#define IS_REQ_VENDOR(req) ( ( (req) & 0x7f ) == REQ_VENDOR_OUT )
 
 void EVENT_USB_Device_ControlRequest() {
 	uint8_t req = USB_ControlRequest.bRequest;
 	if ( IS_REQ_VENDOR(USB_ControlRequest.bmRequestType) ) {
-		//TODO: process it
+		RequestCallback cbk = NULL;
+		if (USB_ControlRequest.bRequest < GMK_USBIF_INST_NUMBER ) {
+			cbk = IMetaData[USB_ControlRequest.bRequest].userData;
+		}
+		
+		if (cbk == NULL) {
+			// invalid request, we just send back the packet, and print
+			// error.
+			PrintError(GMK_ERR_INVALID_HOST_VENDOR_REQUEST);
+			Endpoint_ClearOUT();
+			Endpoint_ClearStatusStage();
+			return;
+		}
+
+		cbk(USB_ControlRequest.wIndex,USB_ControlRequest.wValue);
+
 		return;
 	}
-	// otherwise we just forget it.
+}
+
+
+void ReadAllCallback(uint16_t index,uint16_t value) {
+	Endpoint_ClearSETUP();
+
+	Endpoint_Write_Control_Stream_LE(&Registers,sizeof(Registers));
+
+	Endpoint_ClearOUT();
+}
+
+void SetRegisterCallback(uint16_t index, uint16_t value) {
+	Endpoint_ClearSETUP();
+
+	Registers[index] = value;
+
+	Endpoint_ClearStatusStage();
+}
+
+
+void SaveInEEPROMCallback(uint16_t index, uint16_t value) {
+	Endpoint_ClearSETUP();
+	
+	UpdateEEPROM();
+
+	Endpoint_ClearStatusStage();
+}
+
+
+void FetchCellValuesCallback(uint16_t index, uint16_t value) {
+	Endpoint_ClearSETUP();
+	
+	uint16_t val[25];
+
+	memset(val,0, sizeof(val));
+
+	Endpoint_ClearSETUP();
+	Endpoint_Write_Control_Stream_LE(val,2 * 25);
+
+	Endpoint_ClearOUT();
 }

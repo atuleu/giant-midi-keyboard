@@ -95,7 +95,7 @@ void Print(uint8_t value) {
 
 
 void PrintError(DeviceError_e error) {
-	if (error == GMK_NO_ERROR) {
+	if (error == GMK_ERR_NO_ERROR) {
 		s_UI.error = 0;
 		s_UI.displayState = CHANGED;
 		return;

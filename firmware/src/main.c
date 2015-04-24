@@ -22,8 +22,7 @@ void SetupHardware () {
 
 	//rest of the init here
 	InitUserInterface();
-	USB_Init();
-	PrintError(0x01);
+	InitUSB();
 
 	sei();
 
