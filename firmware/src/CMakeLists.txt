@@ -60,7 +60,7 @@ add_avr_library(lufa-core-device
                 SRCS ${LUFA_CORE_SRCS_EXPANDED})
 
 
-include_directories(${LUFA_ROOT})
+include_directories(${LUFA_ROOT} ${PROJECT_SOURCE_DIR})
 
 add_avr_executable(giant-MIDI-keyboard 
 	MCU atmega32u4

@@ -5,8 +5,8 @@
 
 void InitRegisters();
 
-uint16_t GetRegister(GmkUsbIFRegister_e address);
-void SetRegister(GmkUsbIFRegister_e address);
+extern uint16_t Registers[GMK_USBIF_NUMBER_OF_REGISTERS];
+
 
 void UpdateEEPROM();
 
