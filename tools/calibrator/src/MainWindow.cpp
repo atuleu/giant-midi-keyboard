@@ -11,14 +11,16 @@
 
 MainWindow::MainWindow(QWidget *parent) 
 	: QMainWindow(parent)
-	, d_ui(new Ui::MainWindow) {
+	, d_ui(new Ui::MainWindow) 
+	, d_selectorGuard(false) {
     d_ui->setupUi(this);
     
     LOG(INFO) << "Initializing libusb context";
     lusb_call(libusb_init,NULL);
 
     d_ui->toolButton->setDefaultAction(d_ui->actionSave_in_EEPROM);
-    
+
+    LOG(INFO) << "device is not initialized: " << d_device;
 }
 
 void MainWindow::Close() {
@@ -44,7 +46,14 @@ void MainWindow::on_actionSave_in_EEPROM_triggered() {
 		LOG(WARNING) << "User interface should not let save in EEPROM if no device is opened";
 	}
 
-	d_device->SaveInEEPROM();
+	try {
+		d_device->SaveInEEPROM();
+	} catch ( const std::exception & e) {
+		LOG(ERROR) << "Could not save in EEPROM of device: " << e.what();
+		CloseDevice();
+		d_ui->statusbar->showMessage(tr("Could not save data in EEPROM, device Closed"));
+		d_ui->comboBox->setCurrentIndex(-1);
+	}
 }
 
 
@@ -53,9 +62,11 @@ void MainWindow::on_actionRefresh_triggered() {
 
 	GMKDevice::List list;
 	GMKDevice::ListDevices(list);
+	d_ui->statusbar->showMessage(tr("List of device refreshed"));
    
-
+	d_selectorGuard = true;
 	d_ui->comboBox->clear();
+	d_selectorGuard = false;
 	d_devicesDescriptors.clear();
 	for ( size_t i = 0; i < list.size(); ++i) {
 		GMKDevice::Descriptor::Ptr desc = list[i];
@@ -64,30 +75,26 @@ void MainWindow::on_actionRefresh_triggered() {
 		oss << *desc << " " << desc->Product();
 
 		d_ui->comboBox->addItem(QString(oss.str().c_str()),QVariant(desc->BusAndAddress()));
-
-		if ( d_device && d_device->BusAndAddress() == desc->BusAndAddress() ) {
+		d_selectorGuard = true;
+		if (d_device && d_device->BusAndAddress() == desc->BusAndAddress() ) {
+			d_selectorGuard = false;
 			d_ui->comboBox->setCurrentIndex(i);
+			d_selectorGuard = true;
+				
 		}
 	}
-
+	d_selectorGuard = false;
 	//Do Job
-	d_ui->statusbar->showMessage(tr("List of device refreshed"));
 
-	if ( d_device ) {
-		return;
-	}
-
-	if( d_ui->comboBox->count() == 0) {
-		return;
-	}
-
-	d_ui->comboBox->setCurrentIndex(0);
 }
 
 
 void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 	d_device = GMKDevice::Open(desc);
 	d_ui->actionSave_in_EEPROM->setEnabled(true);
+	d_ui->statusbar->showMessage(tr("Opened device at %1:%2")
+	                             .arg(desc->BusAndAddress() >> 8)
+	                             .arg(desc->BusAndAddress() & 0xff));
 }
 
 void MainWindow::CloseDevice() {
@@ -95,10 +102,17 @@ void MainWindow::CloseDevice() {
 		return;
 	}
 	d_ui->actionSave_in_EEPROM->setEnabled(false);
+	d_ui->statusbar->showMessage(tr("Closed device at %1:%2")
+	                             .arg(d_device->BusAndAddress() >> 8)
+	                             .arg(d_device->BusAndAddress() & 0xff));
 	d_device = GMKDevice::Ptr();
+
 }
 
 void MainWindow::on_comboBox_currentIndexChanged(int index) {
+	if ( d_selectorGuard ) {
+		return;
+	}
 	if (index < 0 ) {
 		CloseDevice();
 		return;
@@ -121,7 +135,7 @@ void MainWindow::on_comboBox_currentIndexChanged(int index) {
 		    << ":" << (busAndAddress && 0xff);
 		throw std::out_of_range(oss.str());
 	}
-	
+
 	Open(fi->second);
 
 }

@@ -36,6 +36,7 @@ private:
 
 	GMKDevice::Ptr d_device;
 	DevicesByBusAddress d_devicesDescriptors;
+	bool d_selectorGuard;
 };
 
 #endif // MAINWINDOW_H
