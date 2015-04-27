@@ -261,7 +261,7 @@ const USB_Descriptor_String_t LanguageString = {
 	.UnicodeString = {LANGUAGE_ID_ENG}
 };
 
-const USB_Descriptor_String_t ProductString = {
+const USB_Descriptor_String_t ManufacturerString = {
 	.Header = {
 		.Size = USB_STRING_LEN(16),
 		.Type = DTYPE_String
@@ -269,7 +269,7 @@ const USB_Descriptor_String_t ProductString = {
 	.UnicodeString = L"Festival Balelec"
 };
 
-const USB_Descriptor_String_t ManufacturerString = {
+const USB_Descriptor_String_t ProductString = {
 	.Header = {
 		.Size = USB_STRING_LEN(19),
 		.Type = DTYPE_String
