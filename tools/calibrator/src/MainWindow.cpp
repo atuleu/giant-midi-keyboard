@@ -84,7 +84,6 @@ void MainWindow::on_actionRefresh_triggered() {
 		}
 	}
 	d_selectorGuard = false;
-	//Do Job
 
 }
 
@@ -92,6 +91,25 @@ void MainWindow::on_actionRefresh_triggered() {
 void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 	d_device = GMKDevice::Open(desc);
 	d_ui->actionSave_in_EEPROM->setEnabled(true);
+
+	//sets the display widget
+	d_ui->tableWidget->setColumnCount(2);
+	d_ui->tableWidget->setRowCount(25);
+
+	const char * labels[25] = { "C 1", "C# 1", "D 1", "D# 1", "E 1", "F 1", "F# 1", "G 1", "G# 1", "A 1" , "A# 1", "B 1",
+	                            "C 2", "C# 2", "D 2", "D# 2", "E 2", "F 2", "F# 2", "G 2", "G# 2", "A 2" , "A# 2", "B 2",
+	                            "C 3"};
+
+	for ( unsigned int i = 0 ; i < 25; ++i ) {
+		d_ui->tableWidget->setItem(i,0,new QTableWidgetItem(tr(labels[i])));
+		d_ui->tableWidget->setItem(i,1,new QTableWidgetItem("0"));
+	}
+
+	QStringList headers;
+	headers << tr("Note") << tr("Value");
+	d_ui->tableWidget->setHorizontalHeaderLabels(headers);
+
+
 	d_ui->statusbar->showMessage(tr("Opened device at %1:%2")
 	                             .arg(desc->BusAndAddress() >> 8)
 	                             .arg(desc->BusAndAddress() & 0xff));
@@ -102,6 +120,11 @@ void MainWindow::CloseDevice() {
 		return;
 	}
 	d_ui->actionSave_in_EEPROM->setEnabled(false);
+
+	//clear the display widget
+	d_ui->tableWidget->setColumnCount(0);
+	d_ui->tableWidget->setRowCount(0);
+	
 	d_ui->statusbar->showMessage(tr("Closed device at %1:%2")
 	                             .arg(d_device->BusAndAddress() >> 8)
 	                             .arg(d_device->BusAndAddress() & 0xff));

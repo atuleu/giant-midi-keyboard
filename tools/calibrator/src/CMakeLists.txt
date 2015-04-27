@@ -10,6 +10,7 @@ set(SRCS main.cpp
 set(HDRS MainWindow.h
          lusb.h
          GMKDevice.h
+         common.h
 	     )
 
 set(UI_RAW_FILES MainWindow.ui)

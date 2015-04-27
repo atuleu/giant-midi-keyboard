@@ -101,24 +101,24 @@
       </property>
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="labelMinimum">
          <property name="text">
           <string>Minimum Value</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QSpinBox" name="spinBox"/>
+        <widget class="QSpinBox" name="spinBoxMinimum"/>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="labelMaximum">
          <property name="text">
           <string>Maximum Value</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QSpinBox" name="spinBox_2"/>
+        <widget class="QSpinBox" name="spinBoxMaximum"/>
        </item>
       </layout>
      </widget>
@@ -136,6 +136,18 @@
         <width>16777215</width>
         <height>16777215</height>
        </size>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="showDropIndicator" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="dragDropOverwriteMode">
+       <bool>false</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
       </property>
      </widget>
     </item>
