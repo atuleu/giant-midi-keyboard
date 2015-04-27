@@ -89,7 +89,9 @@ void GMKDevice::ListDevices(List & ll) {
 		
 		Descriptor::Ptr gmkDesc = std::make_shared<Descriptor>(allDevices[i]);
 		ll.push_back(gmkDesc);
-		LOG(INFO) << "Found at " << *gmkDesc;
+		LOG(INFO) << "Found '" << gmkDesc->Product()
+		          << "' by '" << gmkDesc->Manufacturer()
+		          << "'at " << *gmkDesc;
 		             
 	}
 
