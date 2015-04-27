@@ -37,6 +37,8 @@ public :
 	static void ListDevices(List & );
 	static Ptr Open( const Descriptor::Ptr & handle);
 
+	uint16_t BusAndAddress() const;
+
 	uint16_t GetParam() const;
 	void SetParam() const;
 	void SaveInEEPROM() const;

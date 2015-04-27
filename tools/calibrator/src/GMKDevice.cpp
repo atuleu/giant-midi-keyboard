@@ -136,3 +136,8 @@ std::ostream & operator << (std::ostream & out, const GMKDevice & d) {
 	}
 	return out << "GMKDevice " << *d.d_descriptor;
 }
+
+
+uint16_t GMKDevice::BusAndAddress() const {
+	return d_descriptor->BusAndAddress();
+}
