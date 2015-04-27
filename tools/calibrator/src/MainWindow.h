@@ -22,6 +22,7 @@ public:
 public slots:
 	void on_actionQuit_triggered();
 	void on_actionRefresh_triggered();
+	void on_actionSave_in_EEPROM_triggered();
 	void on_comboBox_currentIndexChanged(int index);
 
 private:

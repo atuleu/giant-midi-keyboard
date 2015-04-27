@@ -29,6 +29,7 @@ void MainWindow::Close() {
 }
 
 MainWindow::~MainWindow() {
+	CloseDevice();
 	Close();
     delete d_ui;
 }
@@ -36,6 +37,14 @@ MainWindow::~MainWindow() {
 
 void MainWindow::on_actionQuit_triggered() {
 	this->close();
+}
+
+void MainWindow::on_actionSave_in_EEPROM_triggered() {
+	if(!d_device) {
+		LOG(WARNING) << "User interface should not let save in EEPROM if no device is opened";
+	}
+
+	d_device->SaveInEEPROM();
 }
 
 
@@ -77,14 +86,16 @@ void MainWindow::on_actionRefresh_triggered() {
 
 
 void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
-	throw_nyi();
+	d_device = GMKDevice::Open(desc);
+	d_ui->actionSave_in_EEPROM->setEnabled(true);
 }
 
 void MainWindow::CloseDevice() {
 	if( !d_device ) {
 		return;
 	}
-	throw_nyi();
+	d_ui->actionSave_in_EEPROM->setEnabled(false);
+	d_device = GMKDevice::Ptr();
 }
 
 void MainWindow::on_comboBox_currentIndexChanged(int index) {
