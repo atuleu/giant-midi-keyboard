@@ -1,8 +1,15 @@
 #include "GMKDevice.h"
 
+#include "lusb.h"
+
+std::ostream & operator<<( std::ostream & out, const libusb_device_descriptor & d) {
+	out << "Device 0x" << std::hex << (int)d.idVendor << ":0x" << (int)d.idProduct << std::dec;
+	return out;
+}
+
 #include <glog/logging.h>
 
-#include "lusb.h"
+
 
 #include "common.h"
 
@@ -21,9 +28,35 @@ uint16_t GMKDevice::Descriptor::BusAndAddress() const {
 	return d_busAndAddress;
 }
 
+
+
 void GMKDevice::ListDevices(List & ll) {
 	ll.clear();
-	throw_nyi();
+	LOG(INFO) << "Listing devices with VID:" << std::hex << VID << ", PID:" << PID << std::dec;
+	
+	libusb_device ** allDevices;
+
+	ssize_t count = libusb_get_device_list(NULL,&allDevices);
+	if ( count < 0 ) {
+		lusb_throw(libsub_get_device_list,(libusb_error)count);
+	}
+
+	ll.reserve(count);
+
+	for ( uint32_t i = 0; i < count; ++i) {
+		libusb_device_descriptor desc;
+		lusb_call(libusb_get_device_descriptor,allDevices[i],&desc);
+		if ( desc.idVendor != VID || desc.idProduct != PID) {
+			continue;
+		}
+		
+		Descriptor::Ptr gmkDesc = std::make_shared<Descriptor>(allDevices[i]);
+		ll.push_back(gmkDesc);
+		LOG(INFO) << "Found at " << *gmkDesc;
+		             
+	}
+
+//	throw_nyi();
 }
 
 GMKDevice::Ptr GMKDevice::Open(const Descriptor::Ptr & handle)  {

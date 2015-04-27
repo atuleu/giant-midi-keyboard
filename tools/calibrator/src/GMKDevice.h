@@ -15,11 +15,11 @@ public :
 	class Descriptor {
 	public :
 		typedef std::shared_ptr<Descriptor>  Ptr;
+		Descriptor(libusb_device * dev);
 		~Descriptor();
 		uint16_t BusAndAddress() const;
 	private :
 		friend class GMKDevice;
-		Descriptor(libusb_device * dev);
 		libusb_device * d_dev;
 		uint16_t d_busAndAddress;
 	};
@@ -38,7 +38,12 @@ public :
 protected :
 
 private :
-friend std::ostream & operator<< ( std::ostream & out, const GMKDevice & );
+
+	const static uint16_t VID = 0x03eb;
+	const static uint16_t PID = 0x2048;
+
+
+	friend std::ostream & operator<< ( std::ostream & out, const GMKDevice & );
 	libusb_device_handle * d_handle;
 	Descriptor::Ptr        d_descriptor;
 }; 
