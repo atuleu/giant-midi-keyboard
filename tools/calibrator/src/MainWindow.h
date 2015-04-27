@@ -16,8 +16,10 @@ public:
 
 protected slots:
 	void on_actionQuit_triggered();
-
+	void on_actionRefresh_triggered();
 private:
+	void Close();
+
     Ui::MainWindow * d_ui;
 };
 
