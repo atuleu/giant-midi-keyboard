@@ -3,9 +3,13 @@ set(COMMON_COMMUNICATION_ROOT ${PROJECT_SOURCE_DIR}/../../firmware)
 set(SRCS main.cpp
 	     ${COMMON_COMMUNICATION_ROOT}/communication/communication.c
 	     MainWindow.cpp
+	     lusb.cpp
+	     GMKDevice.cpp
 	     )
 
 set(HDRS MainWindow.h
+         lusb.h
+         GMKDevice.h
 	     )
 
 set(UI_RAW_FILES MainWindow.ui)
