@@ -22,6 +22,43 @@ GMKDevice::Descriptor::Descriptor(libusb_device * dev)
 	: d_dev(libusb_ref_device(dev)) {
 	d_busAndAddress = libusb_get_bus_number(d_dev);
 	d_busAndAddress = (d_busAndAddress << 8) | libusb_get_device_address(d_dev);
+	FetchStrings();
+}
+
+
+void GMKDevice::Descriptor::FetchStrings() {
+	libusb_device_descriptor desc;
+	lusb_call(libusb_get_device_descriptor,d_dev,&desc);
+	libusb_device_handle * unsafeHandle;
+	lusb_call(libusb_open,d_dev,&unsafeHandle);
+	//to make sure we close in all cases
+	std::shared_ptr<libusb_device_handle> handle(unsafeHandle,[](libusb_device_handle * h){
+			libusb_close(h);
+		});
+
+	unsigned char buffer[1000];
+	lusb_call(libusb_get_string_descriptor_ascii,
+	          handle.get(),
+	          desc.iManufacturer,
+	          buffer,
+	          sizeof(buffer));		
+	d_iManufacturer = std::string((char*)buffer);
+
+	lusb_call(libusb_get_string_descriptor_ascii,
+	          handle.get(),
+	          desc.iProduct,
+	          buffer,
+	          sizeof(buffer));
+	d_iProduct = std::string((char*)buffer);
+	
+}
+
+const std::string & GMKDevice::Descriptor::Product() const {
+	return d_iProduct;
+}
+
+const std::string & GMKDevice::Descriptor::Manufacturer() const{
+	return d_iManufacturer;
 }
 
 uint16_t GMKDevice::Descriptor::BusAndAddress() const {

@@ -18,10 +18,16 @@ public :
 		Descriptor(libusb_device * dev);
 		~Descriptor();
 		uint16_t BusAndAddress() const;
+		const std::string & Product() const;
+		const std::string & Manufacturer() const;
+		
 	private :
 		friend class GMKDevice;
+		void FetchStrings();
 		libusb_device * d_dev;
 		uint16_t d_busAndAddress;
+		std::string d_iProduct;
+		std::string d_iManufacturer;
 	};
 
 	typedef std::shared_ptr<GMKDevice> Ptr;
