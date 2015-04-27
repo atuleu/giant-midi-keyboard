@@ -14,9 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     lusb_call(libusb_init,NULL);
 
     d_ui->toolButton->setDefaultAction(d_ui->actionSave_in_EEPROM);
-
-
-    on_actionRefresh_triggered();
     
 }
 
@@ -40,7 +37,9 @@ void MainWindow::on_actionQuit_triggered() {
 
 void MainWindow::on_actionRefresh_triggered() {
 	LOG(INFO) << "Refreshing list of devices";
-	
+
+	GMKDevice::List list;
+	GMKDevice::ListDevices(list);
 	//Do Job
 	d_ui->statusbar->showMessage(tr("List of device refreshed"));
 }

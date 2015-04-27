@@ -2,6 +2,8 @@
 
 #include <QApplication>
 
+#include <stdexcept>
+
 #include <glog/logging.h>
 
 int main(int argc, char ** argv) {
@@ -15,7 +17,15 @@ int main(int argc, char ** argv) {
 
 	MainWindow main;
 	main.show();
+	int retValue = 0;
+	try {
+		main.on_actionRefresh_triggered();
+		retValue = application.exec();
+	} catch ( const std::exception & e) {
+		LOG(INFO) << "Got unhandled error: " << e.what();
+		retValue = 255;
+	}
 
+	return retValue;
 
-	return application.exec();
 }

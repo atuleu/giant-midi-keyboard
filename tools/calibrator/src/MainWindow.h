@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "GMKDevice.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -14,13 +16,15 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-protected slots:
+public slots:
 	void on_actionQuit_triggered();
 	void on_actionRefresh_triggered();
 private:
 	void Close();
 
     Ui::MainWindow * d_ui;
+
+	GMKDevice::Ptr d_device;
 };
 
 #endif // MAINWINDOW_H

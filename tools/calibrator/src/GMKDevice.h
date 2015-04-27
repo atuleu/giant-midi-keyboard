@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <ostream>
 
 #include <libusb.h> 
 
@@ -15,11 +16,12 @@ public :
 	public :
 		typedef std::shared_ptr<Descriptor>  Ptr;
 		~Descriptor();
-
+		uint16_t BusAndAddress() const;
 	private :
 		friend class GMKDevice;
 		Descriptor(libusb_device * dev);
 		libusb_device * d_dev;
+		uint16_t d_busAndAddress;
 	};
 
 	typedef std::shared_ptr<GMKDevice> Ptr;
@@ -36,5 +38,10 @@ public :
 protected :
 
 private :
+friend std::ostream & operator<< ( std::ostream & out, const GMKDevice & );
 	libusb_device_handle * d_handle;
+	Descriptor::Ptr        d_descriptor;
 }; 
+
+std::ostream & operator << ( std::ostream & out , const GMKDevice::Descriptor & desc) ;
+std::ostream & operator<< ( std::ostream & out, const GMKDevice & );
