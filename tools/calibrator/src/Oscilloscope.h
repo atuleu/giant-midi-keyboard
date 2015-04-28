@@ -3,6 +3,7 @@
 #include <QWidget>
 
 class QwtPlotGrid;
+class QwtPlotCurve;
 
 namespace Ui {
 	class Oscilloscope;
@@ -15,7 +16,7 @@ public:
     virtual ~Oscilloscope();
 
 public slots :
-	void addData(double x, double y);
+	void addDatum(double x, double y);
 	void setData(const double * x, const double * y, size_t size);
 
 	void on_timeEntry_valueChanged(double v);
@@ -24,8 +25,15 @@ public slots :
 
 private:
 
+	void SetXAxisScale();
+
     Ui::Oscilloscope * d_ui;
 	QwtPlotGrid      * d_grid;
+	QwtPlotCurve     * d_curve;
+
+	std::vector<double> d_xData,d_yData;
+
+	std::vector<double>::size_type d_startIdx;
 };
 
 
