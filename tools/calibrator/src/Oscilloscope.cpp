@@ -11,6 +11,10 @@ Oscilloscope::~Oscilloscope() {
     delete d_ui;
 }
 
+void Oscilloscope::setData(const double * x, const double * y, size_t size) {
 
+}
 
+void Oscilloscope::addData(double x, double y) {
 
+}
