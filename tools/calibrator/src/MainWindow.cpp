@@ -175,8 +175,7 @@ void MainWindow::SelectCell(int index) {
 		throw std::out_of_range("Index of cell is out of range");
 	}
 
-	
-
+   
 	d_ui->cellBox->setTitle(tr("Cell: %1").arg(d_ui->tableWidget->item(index,0)->text()));	
 
 	//TODO fetch values 
