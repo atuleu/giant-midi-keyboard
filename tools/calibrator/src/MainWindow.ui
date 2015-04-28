@@ -97,7 +97,7 @@
        </size>
       </property>
       <property name="title">
-       <string>Cell: None</string>
+       <string>QGroupBox</string>
       </property>
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">

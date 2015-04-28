@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     d_ui->toolButton->setDefaultAction(d_ui->actionSave_in_EEPROM);
 
     LOG(INFO) << "device is not initialized: " << d_device;
+    UnselectCell();
 }
 
 void MainWindow::Close() {
@@ -120,8 +121,9 @@ void MainWindow::CloseDevice() {
 		return;
 	}
 	d_ui->actionSave_in_EEPROM->setEnabled(false);
-
-	//clear the display widget
+	// cannot edit cell anymore
+	UnselectCell();
+	// clear the display widget
 	d_ui->tableWidget->setColumnCount(0);
 	d_ui->tableWidget->setRowCount(0);
 	
@@ -161,4 +163,31 @@ void MainWindow::on_comboBox_currentIndexChanged(int index) {
 
 	Open(fi->second);
 
+}
+
+void MainWindow::on_tableWidget_cellClicked(int row, int col) {
+	SelectCell(row);
+}
+
+
+void MainWindow::SelectCell(int index) {
+	if ( index >= 25 || index < 0) {
+		throw std::out_of_range("Index of cell is out of range");
+	}
+
+	
+
+	d_ui->cellBox->setTitle(tr("Cell: %1").arg(d_ui->tableWidget->item(index,0)->text()));	
+
+	//TODO fetch values 
+
+	d_ui->spinBoxMinimum->setEnabled(true);
+	d_ui->spinBoxMaximum->setEnabled(true);	                       
+};
+
+
+void MainWindow::UnselectCell() {
+	d_ui->cellBox->setTitle(tr("Cell: None"));
+	d_ui->spinBoxMinimum->setEnabled(false);
+	d_ui->spinBoxMaximum->setEnabled(false);	                       
 }

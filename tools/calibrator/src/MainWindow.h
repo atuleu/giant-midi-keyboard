@@ -24,12 +24,16 @@ public slots:
 	void on_actionRefresh_triggered();
 	void on_actionSave_in_EEPROM_triggered();
 	void on_comboBox_currentIndexChanged(int index);
+	void on_tableWidget_cellClicked(int count, int index);
 
 private:
 	void Open(const GMKDevice::Descriptor::Ptr &);
 	void CloseDevice();
 	void Close();
 	
+	void SelectCell(int index);
+	void UnselectCell();
+
 	typedef std::map<uint16_t,GMKDevice::Descriptor::Ptr> DevicesByBusAddress;
 
     Ui::MainWindow * d_ui;

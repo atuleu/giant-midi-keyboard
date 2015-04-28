@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 
 find_package(PkgConfig REQUIRED)
 
-find_package(Qt REQUIRED QtCore QtGui)
+find_package(Qt5Widgets)
 
 pkg_check_modules(DEPS libusb-1.0 libglog REQUIRED)
 
