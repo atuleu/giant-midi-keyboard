@@ -8,10 +8,13 @@ find_package(PkgConfig REQUIRED)
 find_package(Qt REQUIRED COMPONENTS Core Gui)
 
 find_library(QWT_LIBRARIES qwt )
+find_path(QWT_INCLUDE_DIRS qwt_plot.h PATH_SUFFIXES qwt)
 
-if(NOT QWT_LIBRARIES)
+if(NOT QWT_LIBRARIES OR NOT QWT_INCLUDE_DIRS)
 	message(FATAL_ERROR "Could not found Qwt")
-endif(NOT QWT_LIBRARIES)
+else(NOT QWT_LIBRARIES OR NOT QWT_INCLUDE_DIRS)
+	message(STATUS "Found Qwt: ${QWT_INCLUDE_DIRS}")
+endif(NOT QWT_LIBRARIES OR NOT QWT_INCLUDE_DIRS)
 
 pkg_check_modules(DEPS libusb-1.0 libglog REQUIRED)
 

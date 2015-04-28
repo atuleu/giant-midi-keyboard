@@ -183,11 +183,13 @@ void MainWindow::SelectCell(int index) {
 
 	d_ui->spinBoxMinimum->setEnabled(true);
 	d_ui->spinBoxMaximum->setEnabled(true);	                       
+	d_ui->plotWidget->setEnabled(true);
 };
 
 
 void MainWindow::UnselectCell() {
 	d_ui->cellBox->setTitle(tr("Cell: None"));
 	d_ui->spinBoxMinimum->setEnabled(false);
-	d_ui->spinBoxMaximum->setEnabled(false);	                       
+	d_ui->spinBoxMaximum->setEnabled(false);
+	d_ui->plotWidget->setEnabled(false);
 }

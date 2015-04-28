@@ -32,7 +32,8 @@ include(${QT_USE_FILE})
 include_directories(${COMMON_COMMUNICATION_ROOT} 
                     ${DEPS_INCLUDE_DIRS}
                     ${CMAKE_CURRENT_BINARY_DIR}
-                    ${CMAKE_CURRENT_SOURCE_DIR} )
+                    ${CMAKE_CURRENT_SOURCE_DIR} 
+                    ${QWT_INCLUDE_DIRS})
 
 add_executable(giant-midi-keyboard-calibrator ${SRCS} ${HDRS} ${UI_FILES} ${MOC_FILES})
 
