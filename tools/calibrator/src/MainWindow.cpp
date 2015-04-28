@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+#include <QTimer>
+
 #include <glog/logging.h> 
 
 #include "lusb.h"
@@ -12,7 +14,13 @@
 MainWindow::MainWindow(QWidget *parent) 
 	: QMainWindow(parent)
 	, d_ui(new Ui::MainWindow) 
-	, d_selectorGuard(false) {
+	, d_selectorGuard(false) 
+	, d_plotTimer(new QTimer(this)) 
+	, d_time(0) {
+
+	d_plotTimer->setObjectName("plotTimer");
+	d_plotTimer->setSingleShot(false);
+	d_plotTimer->setInterval(10);
     d_ui->setupUi(this);
     
     LOG(INFO) << "Initializing libusb context";
@@ -22,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     LOG(INFO) << "device is not initialized: " << d_device;
     UnselectCell();
+
+
+
 }
 
 void MainWindow::Close() {
@@ -183,6 +194,7 @@ void MainWindow::SelectCell(int index) {
 	d_ui->spinBoxMinimum->setEnabled(true);
 	d_ui->spinBoxMaximum->setEnabled(true);	                       
 	d_ui->plotWidget->setEnabled(true);
+	d_plotTimer->start();
 };
 
 
@@ -191,4 +203,11 @@ void MainWindow::UnselectCell() {
 	d_ui->spinBoxMinimum->setEnabled(false);
 	d_ui->spinBoxMaximum->setEnabled(false);
 	d_ui->plotWidget->setEnabled(false);
+	d_plotTimer->stop();
+}
+
+
+void MainWindow::on_plotTimer_timeout() {
+	d_time += d_plotTimer->interval() / 1000.0;
+	d_ui->plotWidget->addDatum(d_time,512 * ( 1.0 + std::sin( 2 * M_PI * d_time)) );
 }

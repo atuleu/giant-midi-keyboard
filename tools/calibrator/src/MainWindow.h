@@ -6,6 +6,8 @@
 
 #include "GMKDevice.h"
 
+class QTimer;
+
 namespace Ui {
 class MainWindow;
 }
@@ -25,7 +27,7 @@ public slots:
 	void on_actionSave_in_EEPROM_triggered();
 	void on_comboBox_currentIndexChanged(int index);
 	void on_tableWidget_cellClicked(int count, int index);
-
+	void on_plotTimer_timeout();
 private:
 	void Open(const GMKDevice::Descriptor::Ptr &);
 	void CloseDevice();
@@ -41,6 +43,9 @@ private:
 	GMKDevice::Ptr d_device;
 	DevicesByBusAddress d_devicesDescriptors;
 	bool d_selectorGuard;
+
+	QTimer * d_plotTimer;
+	double d_time;
 };
 
 #endif // MAINWINDOW_H

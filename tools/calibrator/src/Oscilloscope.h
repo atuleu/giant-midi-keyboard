@@ -24,8 +24,9 @@ public slots :
 	void on_maxEntry_valueChanged(int v);
 
 private:
-
+	void ComputeXAxisScale();
 	void SetXAxisScale();
+
 
     Ui::Oscilloscope * d_ui;
 	QwtPlotGrid      * d_grid;

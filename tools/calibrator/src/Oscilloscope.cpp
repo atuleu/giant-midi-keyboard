@@ -3,9 +3,13 @@
 
 #include <stdexcept>
 
+#include <QPen>
+
 #include "qwt_plot_grid.h"
 #include "qwt_plot_curve.h"
-#include <QPen>
+
+
+#include <glog/logging.h>
 
 Oscilloscope::Oscilloscope(QWidget *parent) 
 	: QWidget(parent)
@@ -23,9 +27,13 @@ Oscilloscope::Oscilloscope(QWidget *parent)
 
 	d_ui->plot->setAxisTitle(QwtPlot::xBottom,"time (s)");
 	
-	
 	d_ui->plot->setAxisScale(QwtPlot::xBottom,0,d_ui->timeEntry->value());
 	d_ui->plot->setAxisScale(QwtPlot::yLeft,d_ui->minEntry->value(),d_ui->maxEntry->value());
+
+	LOG(INFO) << "X Autoscale :" << (d_ui->plot->axisAutoScale(QwtPlot::xBottom) ? "yes" : "no")
+	          << " X ScaleEngine :" << d_ui->plot->axisScaleEngine(QwtPlot::xBottom)
+	          << " Y ScaleEngine :" << d_ui->plot->axisScaleEngine(QwtPlot::yLeft);
+
 
 	d_ui->minEntry->setMaximum(d_ui->maxEntry->value() - d_ui->minEntry->singleStep());
 	d_ui->maxEntry->setMinimum(d_ui->minEntry->value() + d_ui->maxEntry->singleStep());
@@ -61,37 +69,44 @@ void Oscilloscope::setData(const double * x, const double * y, size_t size) {
 		d_yData.push_back(y[i]);
 	}
 	d_startIdx = 0;
-	SetXAxisScale();
+	ComputeXAxisScale();
 
 	d_curve->setRawSamples(&(d_xData[d_startIdx]),
 	                       &(d_yData[d_startIdx]),
 	                       d_xData.size() - d_startIdx);
 
+	SetXAxisScale();
+
 	d_ui->plot->replot();
 }
 
-void Oscilloscope::SetXAxisScale() {
-	double maxTime = d_ui->minEntry->value();
+void Oscilloscope::ComputeXAxisScale() {
+	double maxTime = d_ui->timeEntry->value();
 	//now we check the new start index 
 	while(d_startIdx < d_xData.size() - 1) {
-		if ( (d_xData.back() - d_xData[d_startIdx + 1]) <= maxTime) {
+		double spent = d_xData.back() - d_xData[d_startIdx + 1];
+		if ( spent <= maxTime) {
 			break;
 		}
 		++d_startIdx;
 	}
 	
 	//check if we should reshape the data
-	if ( d_startIdx > d_xData.size() / 2 ) {
+	if ( d_startIdx > (d_xData.size() / 2) ) {
 		//simply copy end of vector at the beginning;
 		d_xData.assign(d_xData.begin() + d_startIdx, d_xData.end());
 		d_yData.assign(d_yData.begin() + d_startIdx, d_yData.end());
 		d_startIdx = 0;
 	}
 
-	d_ui->plot->setAxisScale(QwtPlot::xBottom,
-	                         d_xData[d_startIdx],
-	                         d_xData[d_startIdx] + maxTime);
+}
 
+void Oscilloscope::SetXAxisScale() {
+	double timeEntry = d_ui->timeEntry->value();
+	double startX = d_xData.back() - std::fmod(d_xData.back(),timeEntry);
+	d_ui->plot->setAxisScale(QwtPlot::xBottom,
+	                         startX,
+	                         startX + timeEntry);
 }
 
 void Oscilloscope::addDatum(double x, double y) {
@@ -109,12 +124,13 @@ void Oscilloscope::addDatum(double x, double y) {
 	d_xData.push_back(x);
 	d_yData.push_back(y);	  
 
-	SetXAxisScale();
+	ComputeXAxisScale();
 
 	d_curve->setRawSamples(&(d_xData[d_startIdx]),
 	                       &(d_yData[d_startIdx]),
 	                       d_xData.size() - d_startIdx);
-
+	
+	SetXAxisScale();
 
 	d_ui->plot->replot();
 
