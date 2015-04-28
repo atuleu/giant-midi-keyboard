@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QWidget>
+#include <functional>
+#include <map>
+
 
 class QwtPlotGrid;
 class QwtPlotCurve;
@@ -24,17 +27,32 @@ public slots :
 	void on_maxEntry_valueChanged(int v);
 
 private:
-	void ComputeXAxisScale();
-	void SetXAxisScale();
+	enum State {
+		WAITING_TRIGGER_EMPTY = 0,
+		TRIGGERED_FILLING = 1,
+		WAITING_TRIGGER = 2
+	};
 
+	typedef std::function<State()> ProcessFunction;
+	typedef std::map<State,ProcessFunction> ProcessByState;
+
+	void ShrinkBuffers();
+	void FlushTriggered();
+
+	State ProcessWaitingEmpty();
+	State ProcessFilling();
+	State ProcessWaiting();
+		
 
     Ui::Oscilloscope * d_ui;
 	QwtPlotGrid      * d_grid;
 	QwtPlotCurve     * d_curve;
 
-	std::vector<double> d_xData,d_yData;
-
+	std::vector<double> d_xData,d_yData,d_xDisplayData,d_yDisplayData;
 	std::vector<double>::size_type d_startIdx;
+
+	State d_state;
+	ProcessByState d_processes;
 };
 
 

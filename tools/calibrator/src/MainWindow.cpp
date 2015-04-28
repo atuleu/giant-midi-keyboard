@@ -209,5 +209,12 @@ void MainWindow::UnselectCell() {
 
 void MainWindow::on_plotTimer_timeout() {
 	d_time += d_plotTimer->interval() / 1000.0;
-	d_ui->plotWidget->addDatum(d_time,512 * ( 1.0 + std::sin( 2 * M_PI * d_time)) );
+	double value =  std::sin(M_PI * d_time);
+	if (value < 0) {
+		value = 0;
+	} else {
+		value *= 800;
+	}
+
+	d_ui->plotWidget->addDatum(d_time,value );
 }
