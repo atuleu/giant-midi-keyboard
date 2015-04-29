@@ -39,7 +39,9 @@ int main (void) {
 	StartKeyReader();
 	while(1) {		
 		Event_t evs = ProcessInterface();
+		ProcessKeyReader();
 		ProcessUSB(evs);
+
 
 		if(evs & BUTTON_1_PRESSED) {
 			DecrementOctave();

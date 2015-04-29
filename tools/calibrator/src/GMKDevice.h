@@ -44,7 +44,7 @@ public :
 	void SetParam() const;
 	void SaveInEEPROM() const;
 
-	void FetchCellReport(CellReport_t & report);
+	void FetchCellStatus(int key, CellStatus_t & report);
 
 protected :
 

@@ -55,7 +55,7 @@ typedef enum {
 	GMK_USBIF_INST_READ_ALL_REGISTER = 0,
 	GMK_USBIF_INST_SET_REGISTER      = 1,
 	GMK_USBIF_INST_SAVE_EEPROM       = 2,
-	GMK_USBIF_INST_FETCH_CELL_VALUES = 3,
+	GMK_USBIF_INST_FETCH_CELL_STATUS = 3,
 	GMK_USBIF_INST_NUMBER
 } GmkUsbIFInstruction_e;
 
@@ -68,15 +68,11 @@ typedef struct {
 
 
 typedef struct CellStatus {
-	uint8_t  pressCount;
+	uint16_t systime;
 	uint16_t value;
+	uint8_t  pressCount;
 	uint8_t  lastVelocity;
 } CellStatus_t;
-
-typedef struct CellReport {
-	uint16_t systime;
-	CellStatus_t cells[25];
-} CellReport_t;
 		
 
 extern GmkUSBIFInstructionMetadata_t IMetaData[GMK_USBIF_INST_NUMBER];

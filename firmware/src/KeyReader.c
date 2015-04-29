@@ -97,6 +97,12 @@ typedef enum Keys {
 	NUM_KEYS   = 25,//25
 } Keys_e;
 
+const static Keys_e mapping[NUM_KEYS] = {
+	C_1,C_SHARP_1,D_1,D_SHARP_1,E_1,F_1,F_SHARP_1,G_1,G_SHARP_1,A_1,A_SHARP_1,B_1,
+	C_2,C_SHARP_2,D_2,D_SHARP_2,E_2,F_2,F_SHARP_2,G_2,G_SHARP_2,A_2,A_SHARP_2,B_2,
+	C_3};
+
+
 typedef struct KeyReader {
 	uint8_t keyReadIndex;
 	uint8_t byteReadIndex;
@@ -258,7 +264,6 @@ void ProcessSPI() {
 		(s_KR.keys[keyIdx()].selectChip)();
 
 	}
-
 	//start to pull out a new byte
 	SPDR = s_KR.keys[keyIdx()].bytes[s_KR.byteReadIndex];
 
@@ -323,18 +328,16 @@ void DecrementOctave() {
 	--s_KR.octave;
 }
 
-void FillCellReport(CellReport_t * res) {
-	if (res == NULL ) {
+void FillCellStatus(uint8_t i, CellStatus_t * res) {
+	if (res == NULL || i >= NUM_KEYS) {
 		return;
 	}
 
 	res->systime = GetSystime();
 
-	for(uint8_t i = 0; i < NUM_KEYS; ++i ) {
-		res->cells[i].pressCount = s_KR.keys[i].pressCount;
-		res->cells[i].lastVelocity = s_KR.keys[i].lastVelocity;
-		
-		res->cells[i].value = s_KR.keys[i].values[(s_KR.keys[i].readCount) & KEY_DATA_MASK];
-	}
+	Keys_e idx = mapping[i];
+	res->pressCount   = s_KR.keys[idx].pressCount + 0xaa;
+	res->lastVelocity = s_KR.keys[idx].lastVelocity + 0x55;		
+	res->value        = i | (((uint16_t)i+1 ) << 8 );
 
 }

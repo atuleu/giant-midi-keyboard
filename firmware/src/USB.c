@@ -8,7 +8,7 @@
 void ReadAllCallback(uint16_t index, uint16_t value);
 void SetRegisterCallback(uint16_t index, uint16_t value);
 void SaveInEEPROMCallback(uint16_t index, uint16_t value);
-void FetchCellValuesCallback(uint16_t index, uint16_t value);
+void FetchCellStatusCallback(uint16_t index, uint16_t value);
 
 typedef void(*RequestCallback)(uint16_t,uint16_t);
 
@@ -19,7 +19,7 @@ void InitUSB() {
 	IMetaData[GMK_USBIF_INST_READ_ALL_REGISTER].userData = &ReadAllCallback;
 	IMetaData[GMK_USBIF_INST_SET_REGISTER].userData      = &SetRegisterCallback;
 	IMetaData[GMK_USBIF_INST_SAVE_EEPROM].userData       = &SaveInEEPROMCallback;
-	IMetaData[GMK_USBIF_INST_FETCH_CELL_VALUES].userData = &FetchCellValuesCallback;
+	IMetaData[GMK_USBIF_INST_FETCH_CELL_STATUS].userData = &FetchCellStatusCallback;
 	
 	PrintError(GMK_ERR_NO_USB_CONNECTION);
 }
@@ -180,14 +180,14 @@ void SaveInEEPROMCallback(uint16_t index, uint16_t value) {
 }
 
 
-void FetchCellValuesCallback(uint16_t index, uint16_t value) {
+void FetchCellStatusCallback(uint16_t index, uint16_t value) {
 	Endpoint_ClearSETUP();
 	
-	CellReport_t report;
-	FillCellReport(&report);
+	CellStatus_t status;
+	FillCellStatus(index,&status);
 
 	Endpoint_ClearSETUP();
-	Endpoint_Write_Control_Stream_LE(&report,sizeof(report));
+	Endpoint_Write_Control_Stream_LE(&status,sizeof(status));
 
 	Endpoint_ClearOUT();
 }

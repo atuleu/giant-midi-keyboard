@@ -142,23 +142,38 @@ uint16_t GMKDevice::BusAndAddress() const {
 	return d_descriptor->BusAndAddress();
 }
 
+#include <sstream>
 
-void GMKDevice::FetchCellReport(CellReport_t & value) {
+void GMKDevice::FetchCellStatus(int key, CellStatus_t & value) {
+	if (key < 0 || key >= 25) {
+		return;
+	}
 	std::lock_guard<std::mutex> lock(d_mutex);
 	
-	uint8_t buffer[sizeof(CellReport_t)];
+	uint8_t buffer[sizeof(CellStatus_t)];
+	
 
 	lusb_call(libusb_control_transfer,
 	          d_handle,
 	          REQ_VENDOR_IN,
-	          GMK_USBIF_INST_FETCH_CELL_VALUES,
-	          0,
-	          0,
+	          GMK_USBIF_INST_FETCH_CELL_STATUS,
+	          key,
+	          key,
 	          buffer,
-	          sizeof(CellReport_t),
+	          sizeof(CellStatus_t),
 	          0);
 
-	memcpy(&value,buffer,sizeof(CellReport_t));
+	std::ostringstream oss;
+	std::string prefix = "";
+	for (uint8_t i = 0; i < sizeof(CellStatus_t); ++i ) {
+		oss << prefix << std::hex << (int) buffer[i];
+		prefix = ":";
+	}
+	LOG(INFO) << "Got: " << oss.str();
 
+	value.systime = ((uint16_t)buffer[1]) << 8 | buffer[0];
+	value.value = ((uint16_t)buffer[3]) << 8 | buffer[3];
+	value.pressCount = buffer[4];
+	value.lastVelocity = buffer[5];
 
 }

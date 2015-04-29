@@ -104,7 +104,7 @@ void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 	d_ui->actionSave_in_EEPROM->setEnabled(true);
 
 	//sets the display widget
-	d_ui->tableWidget->setColumnCount(2);
+	d_ui->tableWidget->setColumnCount(4);
 	d_ui->tableWidget->setRowCount(25);
 
 	QString labels[12] = { tr("C"), tr("C#") ,tr("D"), tr("D#") , tr("E"), tr("F") , tr("F#"), tr("G"), tr("G#"), tr("A") , tr("A#"), tr("B") };
@@ -114,10 +114,12 @@ void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 		int nb = (i - labelIdx) / 12 + 1;
 		d_ui->tableWidget->setItem(i,0,new QTableWidgetItem(tr("%1 %2").arg(labels[labelIdx]).arg(nb)));
 		d_ui->tableWidget->setItem(i,1,new QTableWidgetItem("0"));
+		d_ui->tableWidget->setItem(i,2,new QTableWidgetItem("0"));
+		d_ui->tableWidget->setItem(i,3,new QTableWidgetItem("0"));
 	}
 
 	QStringList headers;
-	headers << tr("Note") << tr("Value");
+	headers << tr("Note") << tr("Value") << tr("Press Count") << tr("Velocity");
 	d_ui->tableWidget->setHorizontalHeaderLabels(headers);
 
 	d_plotTimer->start();
@@ -211,29 +213,23 @@ void MainWindow::UnselectCell() {
 
 
 void MainWindow::on_plotTimer_timeout() {
-	if(!d_device) {
+	if(!d_device || d_selectedCell == -1) {
 		return;
 	}
-	CellReport_t report;
-	d_device->FetchCellReport(report);
+	CellStatus_t status;
+	d_device->FetchCellStatus(d_selectedCell,status);
 	//display data in table
-	for ( size_t i = 0; i < 25; ++i ) {
-		d_ui->tableWidget->item(i,1)->setText(QString::number(report.cells[i].value));
-	}
 
-	if(d_selectedCell == -1) {
-		return;
-	}
+	d_ui->tableWidget->item(d_selectedCell,1)->setText(QString::number(status.value));
 
 	if ( d_timeSync == false ) {
 		d_time = 0.0;
-		d_lastTime = report.systime;
+		d_lastTime = status.systime;
 		d_timeSync = true;
 	} else {
-		d_time += 1e-3 * ( report.systime - d_lastTime);
-		d_lastTime = report.systime;
+		d_time += 1e-3 * ( status.systime - d_lastTime);
+		d_lastTime = status.systime;
 	}
 	
-
-	d_ui->plotWidget->addDatum(d_time,report.cells[d_selectedCell].value);
+	d_ui->plotWidget->addDatum(d_time,status.value);
 }
