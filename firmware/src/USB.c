@@ -3,6 +3,7 @@
 #include <communication/communication.h>
 
 #include "Registers.h"
+#include "KeyReader.h"
 
 void ReadAllCallback(uint16_t index, uint16_t value);
 void SetRegisterCallback(uint16_t index, uint16_t value);
@@ -182,12 +183,11 @@ void SaveInEEPROMCallback(uint16_t index, uint16_t value) {
 void FetchCellValuesCallback(uint16_t index, uint16_t value) {
 	Endpoint_ClearSETUP();
 	
-	uint16_t val[25];
-
-	memset(val,0, sizeof(val));
+	CellReport_t report;
+	FillCellReport(&report);
 
 	Endpoint_ClearSETUP();
-	Endpoint_Write_Control_Stream_LE(val,2 * 25);
+	Endpoint_Write_Control_Stream_LE(&report,sizeof(report));
 
 	Endpoint_ClearOUT();
 }

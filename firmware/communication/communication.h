@@ -66,6 +66,19 @@ typedef struct {
 	void * userData;
 } GmkUSBIFInstructionMetadata_t;
 
+
+typedef struct CellStatus {
+	uint8_t  pressCount;
+	uint16_t value;
+	uint8_t  lastVelocity;
+} CellStatus_t;
+
+typedef struct CellReport {
+	uint16_t systime;
+	CellStatus_t cells[25];
+} CellReport_t;
+		
+
 extern GmkUSBIFInstructionMetadata_t IMetaData[GMK_USBIF_INST_NUMBER];
 
 #ifdef __cplusplus

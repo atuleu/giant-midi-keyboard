@@ -3,6 +3,7 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
+typedef struct CellReport CellReport_t;
 
 void InitKeyReader();
 
@@ -16,6 +17,7 @@ void ReleaseEvent();
 void IncrementOctave();
 void DecrementOctave();
 
+void FillCellReport(CellReport_t * res);
 
 
 

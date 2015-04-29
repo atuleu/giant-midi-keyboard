@@ -2,6 +2,9 @@
 
 #include <avr/io.h>
 
+#include <communication/communication.h>
+#include "Systime.h"
+
 #define KEY_DATA_SIZE 4
 #define KEY_DATA_MASK (KEY_DATA_SIZE - 1)
 
@@ -50,6 +53,8 @@ typedef struct KeyData {
 	// read ring buffer
 	uint8_t  readCount;
 	uint8_t  processCount;
+	uint8_t  pressCount;
+	uint8_t  lastVelocity;
 	uint16_t values[KEY_DATA_SIZE];
 	
 	//data to send via SPI
@@ -150,6 +155,8 @@ void InitChip(const Keys_e * keysFromChipIndex, SelectorFPtr selector) {
 
 		s_KR.keys[i].readCount = 0;
 		s_KR.keys[i].processCount = 0;
+		s_KR.keys[i].pressCount = 0;
+		s_KR.keys[i].lastVelocity = 0;		
 		s_KR.keys[i].selectChip = selector;
 		s_KR.keys[i].bytes[0] = 0x01;
 		s_KR.keys[i].bytes[1] = 0x80 | ((chipIndex & 0x07 ) << 4);
@@ -316,3 +323,18 @@ void DecrementOctave() {
 	--s_KR.octave;
 }
 
+void FillCellReport(CellReport_t * res) {
+	if (res == NULL ) {
+		return;
+	}
+
+	res->systime = GetSystime();
+
+	for(uint8_t i = 0; i < NUM_KEYS; ++i ) {
+		res->cells[i].pressCount = s_KR.keys[i].pressCount;
+		res->cells[i].lastVelocity = s_KR.keys[i].lastVelocity;
+		
+		res->cells[i].value = s_KR.keys[i].values[(s_KR.keys[i].readCount) & KEY_DATA_MASK];
+	}
+
+}
