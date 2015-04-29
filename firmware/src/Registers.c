@@ -11,11 +11,20 @@ void InitRegisters() {
 		uint16_t * address = (uint16_t *) (2 * i + 2);
 		Registers[i] = eeprom_read_word(address);
 
-		if ( Registers[i] != 0xffff ) {
+		if ( Registers[i] != 0xffff && Registers[i] != 0x0000) {
 			continue;
 		}
 
-		//Initialize here variable
+		switch ( i % GMK_CELL_NUM_PARAMS ) {
+		case GMK_CELL_LOW_THRESHOLD:
+			Registers[i] = 1;
+			break;
+		case GMK_CELL_HIGH_THRESHOLD:
+			Registers[i] = 1000;
+			break;
+		};
+
+
 	}
 }
 		

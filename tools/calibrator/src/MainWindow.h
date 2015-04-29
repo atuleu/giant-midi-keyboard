@@ -49,6 +49,7 @@ private:
 	int    d_selectedCell;
 	uint16_t d_lastTime;
 	bool     d_timeSync;
+	double   d_frameRate;
 };
 
 #endif // MAINWINDOW_H

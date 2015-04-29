@@ -7,6 +7,7 @@
 #include "UserInterface.h"
 #include "USB.h"
 #include "KeyReader.h"
+#include "Registers.h"
 
 /* SetupHardware is setting up all global register */
 
@@ -25,7 +26,8 @@ void SetupHardware () {
 	InitUSB();
 
 	sei();
-
+	InitRegisters();
+	
 	InitSystime();
 
 	InitKeyReader();

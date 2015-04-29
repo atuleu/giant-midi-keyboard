@@ -5,7 +5,7 @@
 #include "Registers.h"
 #include "KeyReader.h"
 
-void ReadAllCallback(uint16_t index, uint16_t value);
+void ReadCallback(uint16_t index, uint16_t value);
 void SetRegisterCallback(uint16_t index, uint16_t value);
 void SaveInEEPROMCallback(uint16_t index, uint16_t value);
 void FetchCellStatusCallback(uint16_t index, uint16_t value);
@@ -16,7 +16,7 @@ void InitUSB() {
 	USB_Init();
 
 	//set ups the callback here
-	IMetaData[GMK_USBIF_INST_READ_ALL_REGISTER].userData = &ReadAllCallback;
+	IMetaData[GMK_USBIF_INST_READ_REGISTER].userData = &ReadCallback;
 	IMetaData[GMK_USBIF_INST_SET_REGISTER].userData      = &SetRegisterCallback;
 	IMetaData[GMK_USBIF_INST_SAVE_EEPROM].userData       = &SaveInEEPROMCallback;
 	IMetaData[GMK_USBIF_INST_FETCH_CELL_STATUS].userData = &FetchCellStatusCallback;
@@ -154,18 +154,25 @@ void EVENT_USB_Device_ControlRequest() {
 }
 
 
-void ReadAllCallback(uint16_t index,uint16_t value) {
+void ReadCallback(uint16_t index,uint16_t value) {
 	Endpoint_ClearSETUP();
 
-	Endpoint_Write_Control_Stream_LE(&Registers,sizeof(Registers));
+	if (index < GMK_USBIF_NUMBER_OF_REGISTERS ) {
+		Endpoint_Write_Control_Stream_LE(&(Registers[index]),2);
+	} else {
+		uint16_t invalid = 0xaaaa;
+		Endpoint_Write_Control_Stream_LE(&invalid,2);
+	}
 
 	Endpoint_ClearOUT();
 }
 
 void SetRegisterCallback(uint16_t index, uint16_t value) {
+	
 	Endpoint_ClearSETUP();
-
-	Registers[index] = value;
+	if (index < GMK_USBIF_NUMBER_OF_REGISTERS ) {
+		Registers[index] = value;
+	}
 
 	Endpoint_ClearStatusStage();
 }

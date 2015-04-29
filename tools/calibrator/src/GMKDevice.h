@@ -40,9 +40,9 @@ public :
 
 	uint16_t BusAndAddress() const;
 
-	uint16_t GetParam() const;
-	void SetParam() const;
-	void SaveInEEPROM() const;
+	uint16_t GetParam(GmkUsbIFRegister_e reg);
+	void SetParam(GmkUsbIFRegister_e index, uint16_t value);
+	void SaveInEEPROM();
 
 	void FetchCellStatus(int key, CellStatus_t & report);
 

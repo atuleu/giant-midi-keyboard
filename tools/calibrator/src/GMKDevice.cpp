@@ -111,15 +111,47 @@ GMKDevice::~GMKDevice() {
 	libusb_close(d_handle);
 }
 
-uint16_t GMKDevice::GetParam() const {
-	throw_nyi();
+uint16_t GMKDevice::GetParam(GmkUsbIFRegister_e reg){
+	if (reg >= GMK_USBIF_NUMBER_OF_REGISTERS) {
+		throw std::runtime_error("invalid index");
+	}
+	
+	std::lock_guard<std::mutex> lock(d_mutex);
+	uint8_t buffer[2];
+	
+	lusb_call(libusb_control_transfer,
+	          d_handle,
+	          REQ_VENDOR_IN,
+	          GMK_USBIF_INST_READ_REGISTER,
+	          0,
+	          reg,
+	          buffer,
+	          2,
+	          0);
+	LOG(INFO) << std::dec <<"Reading " << reg << ":" << std::hex << (int)buffer[0] << ":" << (int)buffer[1];
+	return (((uint16_t)buffer[1]) << 8) | buffer[0];
 }
 
-void GMKDevice::SetParam() const {
-	throw_nyi();
+void GMKDevice::SetParam(GmkUsbIFRegister_e reg, uint16_t value){
+	if (reg >= GMK_USBIF_NUMBER_OF_REGISTERS) {
+		throw std::runtime_error("invalid index");
+	}
+	
+	std::lock_guard<std::mutex> lock(d_mutex);
+
+	lusb_call(libusb_control_transfer,
+	          d_handle,
+	          REQ_VENDOR_IN,
+	          GMK_USBIF_INST_SET_REGISTER,
+	          value,
+	          reg,
+	          NULL,
+	          0,
+	          0);
+	
 }
 
-void GMKDevice::SaveInEEPROM() const {
+void GMKDevice::SaveInEEPROM(){
 	throw_nyi();
 }
 

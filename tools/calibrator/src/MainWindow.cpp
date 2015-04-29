@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	d_plotTimer->setObjectName("plotTimer");
 	d_plotTimer->setSingleShot(false);
-	d_plotTimer->setInterval(10);
+	d_plotTimer->setInterval(2);
     d_ui->setupUi(this);
     
     LOG(INFO) << "Initializing libusb context";
@@ -192,14 +192,19 @@ void MainWindow::SelectCell(int index) {
 	QString note =  d_ui->tableWidget->item(index,0)->text();
 	d_ui->cellBox->setTitle(tr("Cell: %1").arg(note));	
 	d_ui->statusbar->showMessage(tr("Selected Cell for %1").arg(note));
-	//TODO fetch values 
+
+	d_selectedCell = index;
+	d_ui->spinBoxMinimum->setValue(d_device->GetParam( (GmkUsbIFRegister_e)(2 * d_selectedCell) ));
+	d_ui->spinBoxMaximum->setValue(d_device->GetParam( (GmkUsbIFRegister_e)(2 * d_selectedCell + 1) ));
 
 	d_ui->spinBoxMinimum->setEnabled(true);
 	d_ui->spinBoxMaximum->setEnabled(true);
 	d_ui->plotWidget->resetData();
 	d_ui->plotWidget->setEnabled(true);
-	d_selectedCell = index;
+
 	d_timeSync = false;
+
+
 };
 
 
@@ -217,22 +222,33 @@ void MainWindow::on_plotTimer_timeout() {
 		return;
 	}
 	CellStatus_t status;
-	d_device->FetchCellStatus(d_selectedCell,status);
+	try {
+		d_device->FetchCellStatus(d_selectedCell,status);
+	} catch ( const std::exception & e) {
+		LOG(ERROR) << "Could not fetch point: " << e.what();
+		return;
+	}
 	//display data in table
 
 	d_ui->tableWidget->item(d_selectedCell,1)->setText(QString::number(status.value));
 	d_ui->tableWidget->item(d_selectedCell,2)->setText(QString::number(status.pressCount));
 	d_ui->tableWidget->item(d_selectedCell,3)->setText(QString::number(status.lastVelocity));
 
+	uint16_t diff = status.systime - d_lastTime;
 	if ( d_timeSync == false ) {
 		d_time = 0.0;
 		d_lastTime = status.systime;
 		d_timeSync = true;
+		d_frameRate = 0.0;
 	} else {
-		uint16_t diff = status.systime - d_lastTime;
 		d_time += 1e-3 * diff;
 		d_lastTime = status.systime;
+		d_frameRate = 0.8 * (1000.0 / diff - d_frameRate);
+		d_ui->labelFrameRate->setText(tr("Sample / sec: %1").arg(QString::number(d_frameRate)));
 	}
-	
-	d_ui->plotWidget->addDatum(d_time,status.value);
+	try {
+		d_ui->plotWidget->addDatum(d_time,status.value);
+	} catch (const std::exception & e) {
+		LOG(ERROR) << "Got exception e: " << e.what()<< " diff: " << diff << " reported time:" << status.systime;
+	}
 }
