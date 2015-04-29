@@ -108,12 +108,12 @@ void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 	d_ui->tableWidget->setColumnCount(2);
 	d_ui->tableWidget->setRowCount(25);
 
-	const char * labels[25] = { "C 1", "C# 1", "D 1", "D# 1", "E 1", "F 1", "F# 1", "G 1", "G# 1", "A 1" , "A# 1", "B 1",
-	                            "C 2", "C# 2", "D 2", "D# 2", "E 2", "F 2", "F# 2", "G 2", "G# 2", "A 2" , "A# 2", "B 2",
-	                            "C 3"};
+	QString labels[12] = { tr("C"), tr("C#") ,tr("D"), tr("D#") , tr("E"), tr("F") , tr("F#"), tr("G"), tr("G#"), tr("A") , tr("A#"), tr("B") };
 
 	for ( unsigned int i = 0 ; i < 25; ++i ) {
-		d_ui->tableWidget->setItem(i,0,new QTableWidgetItem(tr(labels[i])));
+		int labelIdx = i % 8;
+		int nb = (i - labelIdx) / 8 + 1;
+		d_ui->tableWidget->setItem(i,0,new QTableWidgetItem(tr("%1 %2").arg(labels[labelIdx]).arg(nb)));
 		d_ui->tableWidget->setItem(i,1,new QTableWidgetItem("0"));
 	}
 
