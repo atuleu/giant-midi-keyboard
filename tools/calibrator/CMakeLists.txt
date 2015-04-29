@@ -20,5 +20,10 @@ pkg_check_modules(DEPS libusb-1.0 libglog REQUIRED)
 
 add_definitions("--std=c++11")
 
+option (UPDATE_TRANSLATIONS "Update source translation translations/*.ts")
+
+# prevent the generated files from being deleted during make clean
+set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM true)
+
 
 add_subdirectory(src)
