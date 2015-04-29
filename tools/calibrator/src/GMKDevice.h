@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <ostream>
+#include <mutex>
 
 #include <libusb.h> 
 
@@ -43,6 +44,8 @@ public :
 	void SetParam() const;
 	void SaveInEEPROM() const;
 
+	void FetchCellReport(CellReport_t & report);
+
 protected :
 
 private :
@@ -54,6 +57,8 @@ private :
 	friend std::ostream & operator<< ( std::ostream & out, const GMKDevice & );
 	libusb_device_handle * d_handle;
 	Descriptor::Ptr        d_descriptor;
+
+	std::mutex             d_mutex;
 }; 
 
 std::ostream & operator << ( std::ostream & out , const GMKDevice::Descriptor & desc) ;

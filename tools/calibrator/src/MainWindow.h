@@ -46,6 +46,9 @@ private:
 
 	QTimer * d_plotTimer;
 	double d_time;
+	int    d_selectedCell;
+	uint16_t d_lastTime;
+	bool     d_timeSync;
 };
 
 #endif // MAINWINDOW_H

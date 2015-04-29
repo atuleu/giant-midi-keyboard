@@ -141,3 +141,24 @@ std::ostream & operator << (std::ostream & out, const GMKDevice & d) {
 uint16_t GMKDevice::BusAndAddress() const {
 	return d_descriptor->BusAndAddress();
 }
+
+
+void GMKDevice::FetchCellReport(CellReport_t & value) {
+	std::lock_guard<std::mutex> lock(d_mutex);
+	
+	uint8_t buffer[sizeof(CellReport_t)];
+
+	lusb_call(libusb_control_transfer,
+	          d_handle,
+	          REQ_VENDOR_IN,
+	          GMK_USBIF_INST_FETCH_CELL_VALUES,
+	          0,
+	          0,
+	          buffer,
+	          sizeof(CellReport_t),
+	          0);
+
+	memcpy(&value,buffer,sizeof(CellReport_t));
+
+
+}

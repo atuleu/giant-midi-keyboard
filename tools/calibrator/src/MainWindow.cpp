@@ -99,7 +99,6 @@ void MainWindow::on_actionRefresh_triggered() {
 
 }
 
-
 void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 	d_device = GMKDevice::Open(desc);
 	d_ui->actionSave_in_EEPROM->setEnabled(true);
@@ -121,7 +120,8 @@ void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 	headers << tr("Note") << tr("Value");
 	d_ui->tableWidget->setHorizontalHeaderLabels(headers);
 
-
+	d_plotTimer->start();
+	d_selectedCell = -1;
 	d_ui->statusbar->showMessage(tr("Opened device at %1:%2")
 	                             .arg(desc->BusAndAddress() >> 8)
 	                             .arg(desc->BusAndAddress() & 0xff));
@@ -132,6 +132,7 @@ void MainWindow::CloseDevice() {
 		return;
 	}
 	d_ui->actionSave_in_EEPROM->setEnabled(false);
+	d_plotTimer->stop();
 	// cannot edit cell anymore
 	UnselectCell();
 	// clear the display widget
@@ -195,7 +196,8 @@ void MainWindow::SelectCell(int index) {
 	d_ui->spinBoxMaximum->setEnabled(true);
 	d_ui->plotWidget->resetData();
 	d_ui->plotWidget->setEnabled(true);
-	d_plotTimer->start();
+	d_selectedCell = index;
+	d_timeSync = false;
 };
 
 
@@ -204,18 +206,34 @@ void MainWindow::UnselectCell() {
 	d_ui->spinBoxMinimum->setEnabled(false);
 	d_ui->spinBoxMaximum->setEnabled(false);
 	d_ui->plotWidget->setEnabled(false);
-	d_plotTimer->stop();
+	d_selectedCell = -1;
 }
 
 
 void MainWindow::on_plotTimer_timeout() {
-	d_time += d_plotTimer->interval() / 1000.0;
-	double value =  std::sin(M_PI * d_time);
-	if (value < 0) {
-		value = 0;
-	} else {
-		value *= 800;
+	if(!d_device) {
+		return;
+	}
+	CellReport_t report;
+	d_device->FetchCellReport(report);
+	//display data in table
+	for ( size_t i = 0; i < 25; ++i ) {
+		d_ui->tableWidget->item(i,1)->setText(QString::number(report.cells[i].value));
 	}
 
-	d_ui->plotWidget->addDatum(d_time,value );
+	if(d_selectedCell == -1) {
+		return;
+	}
+
+	if ( d_timeSync == false ) {
+		d_time = 0.0;
+		d_lastTime = report.systime;
+		d_timeSync = true;
+	} else {
+		d_time += 1e-3 * ( report.systime - d_lastTime);
+		d_lastTime = report.systime;
+	}
+	
+
+	d_ui->plotWidget->addDatum(d_time,report.cells[d_selectedCell].value);
 }
