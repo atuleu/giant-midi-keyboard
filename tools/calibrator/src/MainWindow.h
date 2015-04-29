@@ -28,6 +28,9 @@ public slots:
 	void on_comboBox_currentIndexChanged(int index);
 	void on_tableWidget_cellClicked(int count, int index);
 	void on_plotTimer_timeout();
+
+	void on_spinBoxMinimum_valueChanged( int value);
+	void on_spinBoxMaximum_valueChanged( int value);
 private:
 	void Open(const GMKDevice::Descriptor::Ptr &);
 	void CloseDevice();

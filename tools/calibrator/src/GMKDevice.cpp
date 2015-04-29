@@ -128,7 +128,7 @@ uint16_t GMKDevice::GetParam(GmkUsbIFRegister_e reg){
 	          buffer,
 	          2,
 	          0);
-	LOG(INFO) << std::dec <<"Reading " << reg << ":" << std::hex << (int)buffer[0] << ":" << (int)buffer[1];
+
 	return (((uint16_t)buffer[1]) << 8) | buffer[0];
 }
 
@@ -138,14 +138,14 @@ void GMKDevice::SetParam(GmkUsbIFRegister_e reg, uint16_t value){
 	}
 	
 	std::lock_guard<std::mutex> lock(d_mutex);
-
+	uint8_t data[2];
 	lusb_call(libusb_control_transfer,
 	          d_handle,
-	          REQ_VENDOR_IN,
+	          REQ_VENDOR_OUT,
 	          GMK_USBIF_INST_SET_REGISTER,
 	          value,
 	          reg,
-	          NULL,
+	          data,
 	          0,
 	          0);
 	

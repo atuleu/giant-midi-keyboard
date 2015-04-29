@@ -252,3 +252,31 @@ void MainWindow::on_plotTimer_timeout() {
 		LOG(ERROR) << "Got exception e: " << e.what()<< " diff: " << diff << " reported time:" << status.systime;
 	}
 }
+
+
+void MainWindow::on_spinBoxMinimum_valueChanged(int value) {
+	if(d_selectedCell < 0 || !d_device || d_ui->spinBoxMinimum->isEnabled() == false) {
+		return;
+	}
+	try {
+		d_device->SetParam((GmkUsbIFRegister_e)(2 * d_selectedCell), value);
+	} catch ( const std::exception & e) {
+		LOG(ERROR) << "Could not set minimum register:" <<e.what();
+		CloseDevice();
+	}
+}
+
+
+void MainWindow::on_spinBoxMaximum_valueChanged(int value) {
+	if(d_selectedCell < 0 || !d_device || d_ui->spinBoxMaximum->isEnabled() == false) {
+		return;
+	}
+
+	try {
+		d_device->SetParam((GmkUsbIFRegister_e)(2 * d_selectedCell + 1), value);
+	} catch ( const std::exception & e) {
+		LOG(ERROR) << "Could not set maximum register:" <<e.what();
+		CloseDevice();
+	}
+
+}

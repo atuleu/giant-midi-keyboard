@@ -17,8 +17,8 @@ void InitUSB() {
 
 	//set ups the callback here
 	IMetaData[GMK_USBIF_INST_READ_REGISTER].userData = &ReadCallback;
-	IMetaData[GMK_USBIF_INST_SET_REGISTER].userData      = &SetRegisterCallback;
-	IMetaData[GMK_USBIF_INST_SAVE_EEPROM].userData       = &SaveInEEPROMCallback;
+	IMetaData[GMK_USBIF_INST_SET_REGISTER].userData  = &SetRegisterCallback;
+	IMetaData[GMK_USBIF_INST_SAVE_EEPROM].userData   = &SaveInEEPROMCallback;
 	IMetaData[GMK_USBIF_INST_FETCH_CELL_STATUS].userData = &FetchCellStatusCallback;
 	
 	PrintError(GMK_ERR_NO_USB_CONNECTION);
