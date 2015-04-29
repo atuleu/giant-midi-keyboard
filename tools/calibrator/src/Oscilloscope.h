@@ -20,7 +20,7 @@ public:
 
 public slots :
 	void addDatum(double x, double y);
-	void setData(const double * x, const double * y, size_t size);
+	void resetData();
 
 	void on_timeEntry_valueChanged(double v);
 	void on_minEntry_valueChanged(int v);

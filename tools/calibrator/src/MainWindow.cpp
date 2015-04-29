@@ -185,14 +185,15 @@ void MainWindow::SelectCell(int index) {
 	if ( index >= 25 || index < 0) {
 		throw std::out_of_range("Index of cell is out of range");
 	}
-
-   
-	d_ui->cellBox->setTitle(tr("Cell: %1").arg(d_ui->tableWidget->item(index,0)->text()));	
-
+	
+	QString note =  d_ui->tableWidget->item(index,0)->text();
+	d_ui->cellBox->setTitle(tr("Cell: %1").arg(note));	
+	d_ui->statusbar->showMessage(tr("Selected Cell for %1").arg(note));
 	//TODO fetch values 
 
 	d_ui->spinBoxMinimum->setEnabled(true);
-	d_ui->spinBoxMaximum->setEnabled(true);	                       
+	d_ui->spinBoxMaximum->setEnabled(true);
+	d_ui->plotWidget->resetData();
 	d_ui->plotWidget->setEnabled(true);
 	d_plotTimer->start();
 };

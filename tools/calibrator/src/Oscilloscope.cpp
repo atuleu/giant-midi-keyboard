@@ -57,7 +57,7 @@ Oscilloscope::~Oscilloscope() {
 }
 
 
-void Oscilloscope::setData(const double * x, const double * y, size_t size) {
+void Oscilloscope::resetData() {
 	d_xData.clear();
 	d_yData.clear();
 	d_startIdx = 0;
@@ -65,21 +65,8 @@ void Oscilloscope::setData(const double * x, const double * y, size_t size) {
 	d_yDisplayData.clear();
 	d_ui->plot->setAxisScale(QwtPlot::xBottom,0,d_ui->timeEntry->value());
 	d_curve->setRawSamples(NULL,NULL,0);
-
-	if (size == 0 || x == NULL || y == NULL) {
-		d_ui->plot->replot();
-		return;
-	}
-
-	d_xData.reserve(size * 2);
-	d_yData.reserve(size * 2);
-
-	d_state = WAITING_TRIGGER_EMPTY;
 	
-	for(size_t i = 0; i < size; ++i) {
-		addDatum(x[i],y[i]);
-	}
-
+	d_ui->plot->replot();
 }
 
 
