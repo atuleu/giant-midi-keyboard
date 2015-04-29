@@ -138,21 +138,31 @@ void GMKDevice::SetParam(GmkUsbIFRegister_e reg, uint16_t value){
 	}
 	
 	std::lock_guard<std::mutex> lock(d_mutex);
-	uint8_t data[2];
 	lusb_call(libusb_control_transfer,
 	          d_handle,
 	          REQ_VENDOR_OUT,
 	          GMK_USBIF_INST_SET_REGISTER,
 	          value,
 	          reg,
-	          data,
+	          NULL,
 	          0,
 	          0);
 	
 }
 
 void GMKDevice::SaveInEEPROM(){
-	throw_nyi();
+	std::lock_guard<std::mutex> lock(d_mutex);
+
+	lusb_call(libusb_control_transfer,
+	          d_handle,
+	          REQ_VENDOR_OUT,
+	          GMK_USBIF_INST_SAVE_EEPROM,
+	          0,
+	          0,
+	          NULL,
+	          0,
+	          0);
+
 }
 
 std::ostream & operator << ( std::ostream & out , const GMKDevice::Descriptor & desc) {
