@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 
 #include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 #include <stdexcept>
 
@@ -15,7 +17,15 @@ int main(int argc, char ** argv) {
 
 
 	QApplication application(argc,argv);
+	application.setOrganizationName("Balelec");
+	application.setApplicationName("giant-MIDI-keyboard-calibrator");
 
+	QString locale = QLocale::system().name();
+	QTranslator translator;
+	LOG(INFO) << "Detected Locale is: " << locale.toUtf8().data();
+	translator.load(":/ts/calibrator_" + locale);
+	
+	application.installTranslator(&translator);
 	MainWindow main;
 	main.show();
 	int retValue = 0;

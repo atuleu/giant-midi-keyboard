@@ -111,8 +111,8 @@ void MainWindow::Open(const GMKDevice::Descriptor::Ptr & desc) {
 	QString labels[12] = { tr("C"), tr("C#") ,tr("D"), tr("D#") , tr("E"), tr("F") , tr("F#"), tr("G"), tr("G#"), tr("A") , tr("A#"), tr("B") };
 
 	for ( unsigned int i = 0 ; i < 25; ++i ) {
-		int labelIdx = i % 8;
-		int nb = (i - labelIdx) / 8 + 1;
+		int labelIdx = i % 12;
+		int nb = (i - labelIdx) / 12 + 1;
 		d_ui->tableWidget->setItem(i,0,new QTableWidgetItem(tr("%1 %2").arg(labels[labelIdx]).arg(nb)));
 		d_ui->tableWidget->setItem(i,1,new QTableWidgetItem("0"));
 	}
