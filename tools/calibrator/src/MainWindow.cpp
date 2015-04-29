@@ -221,13 +221,16 @@ void MainWindow::on_plotTimer_timeout() {
 	//display data in table
 
 	d_ui->tableWidget->item(d_selectedCell,1)->setText(QString::number(status.value));
+	d_ui->tableWidget->item(d_selectedCell,2)->setText(QString::number(status.pressCount));
+	d_ui->tableWidget->item(d_selectedCell,3)->setText(QString::number(status.lastVelocity));
 
 	if ( d_timeSync == false ) {
 		d_time = 0.0;
 		d_lastTime = status.systime;
 		d_timeSync = true;
 	} else {
-		d_time += 1e-3 * ( status.systime - d_lastTime);
+		uint16_t diff = status.systime - d_lastTime;
+		d_time += 1e-3 * diff;
 		d_lastTime = status.systime;
 	}
 	
