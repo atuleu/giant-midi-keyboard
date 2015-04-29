@@ -7,6 +7,7 @@
 
 #include "qwt_plot_grid.h"
 #include "qwt_plot_curve.h"
+#include "qwt_symbol.h"
 
 
 #include <glog/logging.h>
@@ -15,7 +16,11 @@ Oscilloscope::Oscilloscope(QWidget *parent)
 	: QWidget(parent)
 	, d_ui(new Ui::Oscilloscope) 
 	, d_grid(new QwtPlotGrid())
-	, d_curve(new QwtPlotCurve("value")) 
+	, d_curve(new QwtPlotCurve("value"))
+	, d_symbol(new QwtSymbol(QwtSymbol::Cross,
+		                         QBrush(),
+		                         QPen(Qt::black,1,Qt::SolidLine),
+		                         QSize(4,4)))
 	, d_state(WAITING_TRIGGER_EMPTY) {
 
 	d_ui->setupUi(this);
@@ -25,6 +30,7 @@ Oscilloscope::Oscilloscope(QWidget *parent)
 	d_grid->attach(d_ui->plot);
 
 	d_curve->attach(d_ui->plot);
+	d_curve->setSymbol(d_symbol);
 
 	d_ui->plot->setAxisTitle(QwtPlot::xBottom,"time (s)");
 	

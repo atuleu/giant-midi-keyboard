@@ -336,8 +336,8 @@ void FillCellStatus(uint8_t i, CellStatus_t * res) {
 	res->systime = GetSystime();
 
 	Keys_e idx = mapping[i];
-	res->pressCount   = s_KR.keys[idx].pressCount + 0xaa;
-	res->lastVelocity = s_KR.keys[idx].lastVelocity + 0x55;		
-	res->value        = i | (((uint16_t)i+1 ) << 8 );
+	res->pressCount   = s_KR.keys[idx].pressCount;
+	res->lastVelocity = s_KR.keys[idx].lastVelocity;		
+	res->value        = s_KR.keys[idx].values[ (s_KR.keys[idx].readCount - 1) & KEY_DATA_MASK];
 
 }

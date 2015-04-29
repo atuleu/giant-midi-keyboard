@@ -7,7 +7,7 @@
 
 class QwtPlotGrid;
 class QwtPlotCurve;
-
+class QwtSymbol;
 namespace Ui {
 	class Oscilloscope;
 }
@@ -47,6 +47,7 @@ private:
     Ui::Oscilloscope * d_ui;
 	QwtPlotGrid      * d_grid;
 	QwtPlotCurve     * d_curve;
+	QwtSymbol        * d_symbol;
 
 	std::vector<double> d_xData,d_yData,d_xDisplayData,d_yDisplayData;
 	std::vector<double>::size_type d_startIdx;
