@@ -7,9 +7,6 @@
 #include "Registers.h"
 #include "UserInterface.h"
 
-#define KEY_DATA_SIZE 4
-#define KEY_DATA_MASK (KEY_DATA_SIZE - 1)
-
 #define EVENTS_RB_SIZE 16
 #define EVENTS_RB_MASK (EVENTS_RB_SIZE - 1)
 
@@ -51,13 +48,20 @@ typedef struct EventRingBufer {
 
 typedef void(*SelectorFPtr)();
 
+typedef enum KeyStatus {
+	WAITING_THRESHOLD = 0,
+	COMPUTING_PEEK = 1,
+	WAITING_RELEASE = 2
+} KeyStatus_e;
+
 typedef struct KeyData {
 	// read ring buffer
-	uint8_t  readCount;
-	uint8_t  processCount;
 	uint8_t  pressCount;
 	uint8_t  lastVelocity;
-	uint16_t values[KEY_DATA_SIZE];
+	uint16_t maxValue;
+	uint16_t value;
+	KeyStatus_e state;
+	Systime_t startRead;
 	
 	//data to send via SPI
 	uint8_t bytes[3];
@@ -162,9 +166,8 @@ void InitChip(const Keys_e * keysFromChipIndex, SelectorFPtr selector) {
 		if ( i >= NUM_KEYS ) {
 			continue;
 		}
-
-		s_KR.keys[i].readCount = 0;
-		s_KR.keys[i].processCount = 0;
+		
+		s_KR.keys[i].state = WAITING_THRESHOLD;
 		s_KR.keys[i].pressCount = 0;
 		s_KR.keys[i].lastVelocity = 0;		
 		s_KR.keys[i].selectChip = selector;
@@ -248,10 +251,9 @@ void ProcessSPI() {
 #define valueIdx(i) (s_KR.keys[i].readCount & KEY_DATA_MASK )
 	//put the data at the right place
 	if (s_KR.byteReadIndex == 1) {
-		s_KR.keys[keyIdx()].values[valueIdx(keyIdx())] = (data & 0x03) << 8;
+		s_KR.keys[keyIdx()].value = (data & 0x03) << 8;
 	} else if (s_KR.byteReadIndex == 2) {
-		s_KR.keys[keyIdx()].values[valueIdx(keyIdx())] |= data & 0xff;
-		++s_KR.keys[keyIdx()].readCount;
+		s_KR.keys[keyIdx()].value |= data & 0xff;
 	}
 
 	//increment the key / byte to pull
@@ -281,39 +283,64 @@ void ProcessSPI() {
 }
 
 void ProcessKey(Keys_e  k) {
-
-	uint8_t indexes[3] = { (s_KR.keys[k].readCount - 1) & KEY_DATA_MASK,
-	                       (s_KR.keys[k].readCount - 2) & KEY_DATA_MASK,
-	                       (s_KR.keys[k].readCount - 3) & KEY_DATA_MASK };
-	                       
-	uint16_t values[3] = { s_KR.keys[k].values[indexes[2]],
-	                       s_KR.keys[k].values[indexes[1]],
-	                       s_KR.keys[k].values[indexes[0]] };
-
 	Keys_e note = inverseMapping[k];
 	uint16_t threshold = 1000;
-	
-	                       
-	if ( values[2] >=  values[1] || values[0] > values[1]  || values[1] < threshold ) {
+	if ( s_KR.keys[k].state == WAITING_THRESHOLD ) {
+   
+		if (s_KR.keys[k].value < threshold) {
+			return;
+		}
+		s_KR.keys[k].state     = COMPUTING_PEEK;
+		s_KR.keys[k].maxValue  = s_KR.keys[k].value;
+		s_KR.keys[k].startRead = GetSystime();
 		return;
 	}
+
+	if ( s_KR.keys[k].state == COMPUTING_PEEK ) {
+		if ( s_KR.keys[k].value < threshold ) {
+			s_KR.keys[k].state = WAITING_THRESHOLD;
+			return;
+		}
+		
+		if (s_KR.keys[k].value > s_KR.keys[k].maxValue ) {
+			s_KR.keys[k].maxValue = s_KR.keys[k].value;
+		}
+
+		if ( (GetSystime() - s_KR.keys[k].startRead ) > 20 ) {
+
+			uint8_t velocity = (s_KR.keys[k].maxValue - threshold);
+			if ( velocity > 15) {
+				velocity = 15;
+			}
+			velocity = velocity << 3;
+			RBE_TAIL(s_KR.events).Event = MIDI_EVENT(0,MIDI_COMMAND_NOTE_ON);
+			RBE_TAIL(s_KR.events).Data1 = MIDI_COMMAND_NOTE_ON | MIDI_CHANNEL(1);
+			RBE_TAIL(s_KR.events).Data2 = 60 + note; // Pitch	
+			RBE_TAIL(s_KR.events).Data3 = velocity;
 			
-	uint8_t velocity = (values[1] - threshold);
-	if ( velocity > 15) {
-		velocity = 15;
+			
+			s_KR.keys[k].pressCount += 1;
+			s_KR.keys[k].lastVelocity = velocity;
+			s_KR.keys[k].state = WAITING_RELEASE;
+			RBE_INCREMENT_TAIL(s_KR.events);
+			//TODO emit noteon
+		}
+		return;
 	}
-	velocity = velocity << 3;
 
-	RBE_TAIL(s_KR.events).Event = MIDI_EVENT(0,MIDI_COMMAND_NOTE_ON);
-	RBE_TAIL(s_KR.events).Data1 = MIDI_COMMAND_NOTE_ON | MIDI_CHANNEL(1);
-	RBE_TAIL(s_KR.events).Data2 = 60 + note; // Pitch	
-	RBE_TAIL(s_KR.events).Data3 = velocity;
+	// waiting release
+	if (s_KR.keys[k].value < threshold ) {
+		s_KR.keys[k].state = WAITING_THRESHOLD;
+		RBE_TAIL(s_KR.events).Event = MIDI_EVENT(0,MIDI_COMMAND_NOTE_OFF);
+		RBE_TAIL(s_KR.events).Data1 = MIDI_COMMAND_NOTE_OFF | MIDI_CHANNEL(1);
+		RBE_TAIL(s_KR.events).Data2 = 60 + note; // Pitch	
+		RBE_TAIL(s_KR.events).Data3 = 127;
+		RBE_INCREMENT_TAIL(s_KR.events);
+		//TODO emit noteoff
+	}
 
-
-	s_KR.keys[k].pressCount += 1;
-	s_KR.keys[k].lastVelocity = velocity;
 	
-	//	RBE_INCREMENT_TAIL(s_KR.events);
+	//	
 }
 
 void ProcessKeys() {
@@ -377,6 +404,6 @@ void FillCellStatus(uint8_t i, CellStatus_t * res) {
 	Keys_e idx = mapping[i];
 	res->pressCount   = s_KR.keys[idx].pressCount;
 	res->lastVelocity = s_KR.keys[idx].lastVelocity;		
-	res->value        = s_KR.keys[idx].values[ (s_KR.keys[idx].readCount - 1) & KEY_DATA_MASK];
+	res->value        = s_KR.keys[idx].value;
 
 }
