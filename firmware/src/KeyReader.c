@@ -4,6 +4,8 @@
 
 #include <communication/communication.h>
 #include "Systime.h"
+#include "Registers.h"
+#include "UserInterface.h"
 
 #define KEY_DATA_SIZE 4
 #define KEY_DATA_MASK (KEY_DATA_SIZE - 1)
@@ -102,6 +104,8 @@ const static Keys_e mapping[NUM_KEYS] = {
 	C_2,C_SHARP_2,D_2,D_SHARP_2,E_2,F_2,F_SHARP_2,G_2,G_SHARP_2,A_2,A_SHARP_2,B_2,
 	C_3};
 
+ static Keys_e inverseMapping[NUM_KEYS];
+
 
 typedef struct KeyReader {
 	uint8_t keyReadIndex;
@@ -182,6 +186,10 @@ void InitKeyReader() {
 	DDRB |= _BV(7);
 	UnselectAllChip(); // unselect all chips
 
+	for(uint8_t i = 0; i < NUM_KEYS; ++i ) {
+		inverseMapping[mapping[i]] = i;
+	}
+
 
 	//Init data structure
 	Keys_e keyFromChipIndex0[8] = {	NUM_KEYS, B_1, A_SHARP_1, A_1,
@@ -203,6 +211,7 @@ void InitKeyReader() {
 	s_KR.octave = 0x00;
 	s_KR.readCount = 0;
 	s_KR.processCount = 0;
+	s_KR.processCountIndex = 0;
 
 	//inits events ringbuffer
 	RBE_INIT(s_KR.events);
@@ -272,16 +281,45 @@ void ProcessSPI() {
 }
 
 void ProcessKey(Keys_e  k) {
+
+	uint8_t indexes[3] = { (s_KR.keys[k].readCount - 1) & KEY_DATA_MASK,
+	                       (s_KR.keys[k].readCount - 2) & KEY_DATA_MASK,
+	                       (s_KR.keys[k].readCount - 3) & KEY_DATA_MASK };
+	                       
+	uint16_t values[3] = { s_KR.keys[k].values[indexes[2]],
+	                       s_KR.keys[k].values[indexes[1]],
+	                       s_KR.keys[k].values[indexes[0]] };
+
+	Keys_e note = inverseMapping[k];
+	uint16_t threshold = 1000;
+	
+	                       
+	if ( values[2] >=  values[1] || values[0] > values[1]  || values[1] < threshold ) {
+		return;
+	}
+			
+	uint8_t velocity = (values[1] - threshold);
+	if ( velocity > 15) {
+		velocity = 15;
+	}
+	velocity = velocity << 3;
+
 	RBE_TAIL(s_KR.events).Event = MIDI_EVENT(0,MIDI_COMMAND_NOTE_ON);
 	RBE_TAIL(s_KR.events).Data1 = MIDI_COMMAND_NOTE_ON | MIDI_CHANNEL(1);
-	RBE_TAIL(s_KR.events).Data2 = k; // Pitch	
-	RBE_TAIL(s_KR.events).Data3 = s_KR.keys[k].values[0] >> 5; //Velocity
+	RBE_TAIL(s_KR.events).Data2 = 60 + note; // Pitch	
+	RBE_TAIL(s_KR.events).Data3 = velocity;
+
+
+	s_KR.keys[k].pressCount += 1;
+	s_KR.keys[k].lastVelocity = velocity;
 	
-	RBE_INCREMENT_TAIL(s_KR.events);
+	//	RBE_INCREMENT_TAIL(s_KR.events);
 }
 
 void ProcessKeys() {
-	while(!RBE_IS_FULL(s_KR.events) && (s_KR.readCount - s_KR.processCount) > 0 ) {		
+	//	while(!RBE_IS_FULL(s_KR.events) && (s_KR.readCount - s_KR.processCount) > 0 ) {		
+
+	while(s_KR.readCount != s_KR.processCount ) {		
 		ProcessKey(s_KR.processCountIndex);
 		++s_KR.processCount;
 		++s_KR.processCountIndex;
@@ -289,6 +327,7 @@ void ProcessKeys() {
 			s_KR.processCountIndex = 0;
 		}
 	}
+
 }
 
 

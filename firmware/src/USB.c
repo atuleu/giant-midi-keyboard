@@ -24,7 +24,7 @@ void InitUSB() {
 	PrintError(GMK_ERR_NO_USB_CONNECTION);
 }
 
-void ProcessUSB(Event_t e) {
+void ProcessUSB() {
 	//certainly we need to fetch the device status or events to report a note.
 
 	if (USB_DeviceState != DEVICE_STATE_Configured ) {
@@ -34,53 +34,25 @@ void ProcessUSB(Event_t e) {
 
 	Endpoint_SelectEndpoint(MIDI_STREAM_IN_EPADDR);
 	
-	if ( Endpoint_IsINReady() && e != 0) {
+	if ( Endpoint_IsINReady() ) {
 		
+		MIDI_EventPacket_t * event = NextKeyEvent();
+		bool clearIn = false;
+		while( event != NULL && Endpoint_IsReadWriteAllowed() ) {
+			Endpoint_Write_Stream_LE(event, sizeof(MIDI_EventPacket_t), NULL);
+			ReleaseEvent();
+			clearIn = true;
+		}
 		// One could do : write data, and continue until
 		// IsReadWriteAllowed does not allow to write stuff, or cannot
 		// write event to the endpoint.
-
-		uint8_t MIDICommand = 0;
-		uint8_t MIDIPitch;
-
-		switch(e) {
-		case BUTTON_0_PRESSED :
-			MIDICommand = MIDI_COMMAND_NOTE_ON;
-			MIDIPitch = 0x3c;
-			break;
-		case BUTTON_1_PRESSED :
-			MIDICommand = MIDI_COMMAND_NOTE_ON;
-			MIDIPitch = 0x3d;
-			break;
-		case BUTTON_2_PRESSED :
-			MIDICommand = MIDI_COMMAND_NOTE_ON;
-			MIDIPitch = 0x3e;
-			break;
-		case BUTTON_0_RELEASED :
-			MIDICommand = MIDI_COMMAND_NOTE_OFF;
-			MIDIPitch = 0x3c;
-			break;
-		case BUTTON_1_RELEASED :
-			MIDICommand = MIDI_COMMAND_NOTE_OFF;
-			MIDIPitch = 0x3d;
-			break;
-		case BUTTON_2_RELEASED :
-			MIDICommand = MIDI_COMMAND_NOTE_OFF;
-			MIDIPitch = 0x3e;
-			break;
-		}
-
-		MIDI_EventPacket_t MIDIEvent = {
-			.Event = MIDI_EVENT(0,MIDICommand),
-			.Data1 = MIDICommand | MIDI_CHANNEL(1),
-			.Data2 = MIDIPitch,
-			.Data3 = 127,
-		};
 			
-		Endpoint_Write_Stream_LE(&MIDIEvent, sizeof(MIDIEvent), NULL);
+
 
 		/* Send the data in the endpoint to the host */
-		Endpoint_ClearIN();
+		if (clearIn) {
+			Endpoint_ClearIN();
+		}
 
 	}
 

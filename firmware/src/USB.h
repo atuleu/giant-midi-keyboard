@@ -12,7 +12,7 @@
 
 
 void InitUSB();
-void ProcessUSB(Event_t e);
+void ProcessUSB();
 
 void EVENT_USB_Device_Connect(void);
 void EVENT_USB_Device_Disconnect(void);

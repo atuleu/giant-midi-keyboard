@@ -205,9 +205,10 @@ void GMKDevice::FetchCellStatus(int key, CellStatus_t & value) {
 	          sizeof(CellStatus_t),
 	          0);
 
+
 	value.systime = (((uint16_t)buffer[1]) << 8) | buffer[0];
 	value.value = (((uint16_t)buffer[3]) << 8) | buffer[2];
-	value.pressCount = buffer[5];
-	value.lastVelocity = buffer[4];
+	value.pressCount = buffer[4];
+	value.lastVelocity = buffer[5];
 
 }

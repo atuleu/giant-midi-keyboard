@@ -42,7 +42,7 @@ int main (void) {
 	while(1) {		
 		Event_t evs = ProcessInterface();
 		ProcessKeyReader();
-		ProcessUSB(evs);
+		ProcessUSB();
 
 
 		if(evs & BUTTON_1_PRESSED) {
@@ -52,15 +52,6 @@ int main (void) {
 			IncrementOctave();
 		}
 
-		MIDI_EventPacket_t * midiEvent = NextKeyEvent();
-		if ( midiEvent == NULL) {
-			continue;
-		}
-		
-		//		if ( midiEvent->Data1 & 0xf0 == MIDI_COMMAND_NOTE_ON) {
-			//Event is a note ON, we display 5 MSB of note's velocity
-		//		Print(midiEvent->Data3);
-		ReleaseEvent();
-			//		}
+
 	}
 }
