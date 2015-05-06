@@ -59,7 +59,7 @@ int main (void) {
 		
 		//		if ( midiEvent->Data1 & 0xf0 == MIDI_COMMAND_NOTE_ON) {
 			//Event is a note ON, we display 5 MSB of note's velocity
-		Print(midiEvent->Data3);
+		//		Print(midiEvent->Data3);
 		ReleaseEvent();
 			//		}
 	}
