@@ -184,14 +184,14 @@ void InitKeyReader() {
 
 
 	//Init data structure
-	Keys_e keyFromChipIndex0[8] = {	C_1, C_SHARP_1, D_1, D_SHARP_1,
-		E_1, F_1, F_SHARP_1,G_1 };
-	Keys_e keyFromChipIndex1[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, NUM_KEYS,	
-	B_1, A_SHARP_1, A_1,G_SHARP_1 };
-	Keys_e keyFromChipIndex2[8] = {	C_2, C_SHARP_2, D_2, D_SHARP_2,
-		E_2, F_2, F_SHARP_2,G_2 };
-	Keys_e keyFromChipIndex3[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, C_3,
-		B_2, A_SHARP_2, A_2,G_SHARP_2 };
+	Keys_e keyFromChipIndex0[8] = {	NUM_KEYS, B_1, A_SHARP_1, A_1,
+		G_SHARP_1, G_1, F_SHARP_1,F_1 };
+	Keys_e keyFromChipIndex1[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, C_1,	
+	C_SHARP_1, D_1, D_SHARP_1,E_1 };
+	Keys_e keyFromChipIndex2[8] = {	C_3, B_2, A_SHARP_2, A_2,
+		G_SHARP_2, G_2, F_SHARP_2,F_2 };
+	Keys_e keyFromChipIndex3[8] = {	NUM_KEYS, NUM_KEYS, NUM_KEYS, C_2,	
+	C_SHARP_2, D_2, D_SHARP_2,E_2 };
 
 	InitChip(keyFromChipIndex0,&SelectChip0);
 	InitChip(keyFromChipIndex1,&SelectChip1);
